@@ -20,7 +20,7 @@
 ### Entrypoint `run.sh`
 
 - [ ] **RUN-01**: `./run.sh --help` lista todos os subcomandos disponíveis com descrição
-- [ ] **RUN-02**: O script expõe os subcomandos `up`, `down`, `bootstrap`, `job`, `test`, `lint`
+- [ ] **RUN-02**: O script expõe os subcomandos `up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo` (oito — revisado na discussão da Fase 1: `seed` separa dados de metadados, `demo` é o comando único que satisfaz o RUN-04)
 - [ ] **RUN-03**: O script falha rápido (`set -euo pipefail`) e propaga código de saída não-zero em qualquer erro
 - [ ] **RUN-04**: Um único comando documentado leva um clone limpo até verde — ambiente de pé, catálogo populado, job executado e testes passando
 

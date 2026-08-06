@@ -47,16 +47,16 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Requirements**: ENV-01, ENV-02, ENV-03, ENV-04, ENV-05, ENV-06, ENV-07, RUN-01, RUN-02, RUN-03, CAT-01, CAT-02, CAT-03, CAT-04
 **Success Criteria** (what must be TRUE):
   1. From a clean clone with no AWS credentials present, `./run.sh up` starts Floci (version-pinned tag, never `latest`) and reports it healthy before returning; no other container is started; `./run.sh down` leaves nothing running.
-  2. `./run.sh bootstrap` runs in an ephemeral Glue container that exits and removes itself, creating the database, table, and partitions in the emulated Catalog from a single versioned schema definition; running it a second time succeeds with no error and no duplicates, confirmed by a boto3 `get_table`/`get_partitions` call against the endpoint.
-  3. `./run.sh --help` lists all six subcommands (`up`, `down`, `bootstrap`, `job`, `test`, `lint`) with descriptions; `up`, `down`, `bootstrap`, and `lint` complete successfully on a clean clone, and any subcommand that fails exits non-zero rather than continuing.
+  2. `./run.sh bootstrap` runs in an ephemeral `python:3.11-slim` tools container that exits and removes itself, creating the database, table, and partitions in the emulated Catalog from a single versioned schema definition; running it a second time succeeds with no error and no duplicates (create-if-absent, update-if-present), confirmed by a boto3 `get_table`/`get_partitions` call against the endpoint. The ~4.77 GB Glue image is NOT pulled during this phase. *(Revised in phase discussion — see 01-CONTEXT.md D-05.)*
+  3. `./run.sh --help` lists all eight subcommands (`up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo`) with descriptions; `up`, `down`, `bootstrap`, `seed`, and `lint` complete successfully on a clean clone, and any subcommand that fails exits non-zero rather than continuing. *(Revised in phase discussion — see 01-CONTEXT.md D-11.)*
   4. Endpoint, region, credentials, bucket names, and database name appear in `.env` and nowhere else; copying `.env.example` unchanged is sufficient to satisfy criteria 1-3, and `.env.example` documents every variable the project reads.
   5. `.gitattributes` forcing `*.sh text eol=lf` exists in the repository history at or before the commit introducing the first `.sh` file, and `run.sh` behaves identically when invoked from Git Bash on Windows and bash on Linux.
 **Plans**: 3 plans (indicative)
 
 Plans:
-- [ ] 01-01: Repo scaffolding — `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*`, `docker-compose.yml` with pinned `floci/floci:1.5.11` + profiled ephemeral `glue` service, `.env.example`
-- [ ] 01-02: `run.sh` — six subcommands, `set -euo pipefail`, `--help`, platform-guarded `MSYS_NO_PATHCONV`, fail-fast validation that `AWS_ENDPOINT_URL` is set in local mode
-- [ ] 01-03: `catalog/schema/*.json` single source of truth + `catalog/bootstrap.py` (boto3, idempotent, `CreatePartition` loop)
+- [ ] 01-01: Repo scaffolding — `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*` and `.planning/research/.cache/`, `docker-compose.yml` with pinned `floci/floci:1.5.11` + `tools` service on `python:3.11-slim` + profiled ephemeral `glue` service, `.env.example` with `PROJECT_NAME`-derived names, pinned `requirements.txt`
+- [ ] 01-02: `run.sh` — eight subcommands, `set -euo pipefail`, `--help`, platform-guarded `MSYS_NO_PATHCONV`, preflight checks (Docker, compose, `.env`) with actionable messages, lean output with detail-on-failure
+- [ ] 01-03: `catalog/schema/*.json` single source of truth (neutral shape, full catalog definition) + `catalog/bootstrap.py` (boto3, create-or-update, `CreatePartition` loop) + `data/sample/` synthetic SC temperature CSVs and the `seed` upload
 
 **Open questions to settle during planning**:
 - **Single source of truth for the table schema between `bootstrap.py` and Terraform (CAT-03).** Highest-stakes open question in the project — if it is not settled here, the two definitions diverge silently and the divergence only surfaces in production. Research proposes `catalog/schema/*.json` consumed by both; the mechanism by which Terraform consumes it is *not* decided. Whatever is chosen here is binding on Phase 3.
