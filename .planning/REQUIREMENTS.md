@@ -98,16 +98,69 @@ Reconhecidos, mas fora do roadmap atual.
 | Jupyter / JupyterLab / Livy | Removidos da imagem Glue 5.0 em relação à 4.0; reintroduzir exigiria um segundo Dockerfile. |
 | Estrutura de pastas de data science (`notebooks/`, `models/`, `reports/`) | Convenção de outro domínio; vira scaffolding que o adotante precisa apagar. |
 | AWS CDK e SAM/CloudFormation | Terraform é o padrão em data engineering e é agnóstico de estado. |
-| Deploy aplicado numa conta AWS real como critério de pronto | Terraform é entregue e validado por `plan`/`validate`, mas aplicar numa conta real não é condição de conclusão. |
+| Deploy aplicado numa conta AWS real como critério de pronto | Terraform é entregue e validado offline por `init -backend=false`, `fmt -check` e `validate`. `terraform plan` está fora — chama `sts:GetCallerIdentity` e exigiria credencial real, quebrando o critério de "pronto sem conta AWS". |
 
 ## Traceability
 
-Preenchido durante a criação do roadmap.
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| ENV-01 | Phase 1 | Pending |
+| ENV-02 | Phase 1 | Pending |
+| ENV-03 | Phase 1 | Pending |
+| ENV-04 | Phase 1 | Pending |
+| ENV-05 | Phase 1 | Pending |
+| ENV-06 | Phase 1 | Pending |
+| ENV-07 | Phase 1 | Pending |
+| RUN-01 | Phase 1 | Pending |
+| RUN-02 | Phase 1 | Pending |
+| RUN-03 | Phase 1 | Pending |
+| RUN-04 | Phase 2 | Pending |
+| CAT-01 | Phase 1 | Pending |
+| CAT-02 | Phase 1 | Pending |
+| CAT-03 | Phase 1 | Pending |
+| CAT-04 | Phase 1 | Pending |
+| JOB-01 | Phase 2 | Pending |
+| JOB-02 | Phase 2 | Pending |
+| JOB-03 | Phase 2 | Pending |
+| JOB-04 | Phase 2 | Pending |
+| JOB-05 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | Pending |
+| TEST-02 | Phase 2 | Pending |
+| TEST-03 | Phase 2 | Pending |
+| TEST-04 | Phase 2 | Pending |
+| TEST-05 | Phase 2 | Pending |
+| CI-01 | Phase 3 | Pending |
+| CI-02 | Phase 3 | Pending |
+| CI-03 | Phase 3 | Pending |
+| IAC-01 | Phase 3 | Pending |
+| IAC-02 | Phase 3 | Pending |
+| IAC-03 | Phase 3 | Pending |
+| IAC-04 | Phase 3 | Pending |
+| DOC-01 | Phase 4 | Pending |
+| DOC-02 | Phase 4 | Pending |
+| DOC-03 | Phase 4 | Pending |
+| DOC-04 | Phase 4 | Pending |
+| DOC-05 | Phase 4 | Pending |
+| DOC-06 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 36 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 36 ⚠️
+- v1 requirements: 38 total
+- Mapped to phases: 38 ✓
+- Unmapped: 0
+- Duplicados entre fases: 0
+
+> **Correção de contagem (2026-08-06):** esta seção declarava 36 requisitos v1. A contagem real dos IDs no corpo do documento é 38 (ENV 7 + RUN 4 + CAT 4 + JOB 5 + TEST 5 + CI 3 + IAC 4 + DOC 6). Nenhum requisito foi perdido — o número no cabeçalho estava errado.
+
+**Distribuição por fase:**
+
+| Fase | Requisitos | Contagem |
+|------|------------|----------|
+| Phase 1 — Local Environment, Entrypoint & Catalog Bootstrap | ENV-01…ENV-07, RUN-01, RUN-02, RUN-03, CAT-01…CAT-04 | 14 |
+| Phase 2 — ETL Job & Green Test Suite | RUN-04, JOB-01…JOB-05, TEST-01…TEST-05 | 11 |
+| Phase 3 — Terraform Module & Continuous Integration | IAC-01…IAC-04, CI-01…CI-03 | 7 |
+| Phase 4 — Public Documentation & Template Launch | DOC-01…DOC-06 | 6 |
+
+> **Nota sobre RUN-04:** o requisito do "único comando até verde" pertence à Phase 2, não à Phase 1, porque só é satisfeito quando o job e os testes existem. A Phase 1 entrega a superfície do `run.sh` (RUN-01/02/03) com `up`, `down`, `bootstrap` e `lint` funcionando; `job` e `test` são exercitados na Phase 2.
 
 ## Open Design Questions
 
@@ -115,12 +168,12 @@ Levantadas pela pesquisa, não resolvidas. Devem ser fechadas no planejamento da
 
 | Questão | Impacto | Onde resolver |
 |---------|---------|---------------|
-| Fonte única de verdade do schema entre `bootstrap.py` e Terraform (CAT-03) | Sem isso os dois divergem silenciosamente e a divergência só aparece em produção | Planejamento das fases de ambiente e IaC |
-| Compatibilidade do dialeto DuckDB com o SQL do Athena/Trino (TEST-04) | Define se o teste via Athena é confiável ou teatro | Planejamento da fase de testes de integração |
-| Cache da imagem Glue (~4.77 GB comprimida) no CI | Domina o tempo de CI; medir antes de otimizar | Planejamento da fase de CI |
-| Eficácia do `MSYS_NO_PATHCONV` entre versões do Git Bash | Só verificável manualmente no Windows — CI Linux não pega | Planejamento da fase de ambiente |
-| Fidelidade real das operações do Floci além do `BatchCreatePartition` | Projeto de 2026, sem validação de terceiros; só emerge com uso | Contínuo; mitigado pelo isolamento por endpoint |
+| Fonte única de verdade do schema entre `bootstrap.py` e Terraform (CAT-03) | Sem isso os dois divergem silenciosamente e a divergência só aparece em produção | **Phase 1** (decisão) — vinculante para a **Phase 3** (consumo pelo Terraform) |
+| Compatibilidade do dialeto DuckDB com o SQL do Athena/Trino (TEST-04) | Define se o teste via Athena é confiável ou teatro | **Phase 2** (define o subconjunto SQL portável); a conclusão vai para `KNOWN_DIFFERENCES.md` na **Phase 4** |
+| Cache da imagem Glue (~4.77 GB comprimida) no CI | Domina o tempo de CI; medir antes de otimizar | **Phase 3** — medir antes de otimizar |
+| Eficácia do `MSYS_NO_PATHCONV` entre versões do Git Bash | Só verificável manualmente no Windows — CI Linux não pega | **Phase 1** — passo de verificação manual explícito, não checagem de CI |
+| Fidelidade real das operações do Floci além do `BatchCreatePartition` | Projeto de 2026, sem validação de terceiros; só emerge com uso | Contínuo — levantado na **Phase 1**, mitigado pelo isolamento por endpoint; divergências encontradas vão para `KNOWN_DIFFERENCES.md` na **Phase 4** |
 
 ---
 *Requirements defined: 2026-08-06*
-*Last updated: 2026-08-06 after initial definition*
+*Last updated: 2026-08-06 after roadmap creation (traceability populated, contagem corrigida de 36 para 38)*
