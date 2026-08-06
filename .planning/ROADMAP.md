@@ -51,12 +51,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `./run.sh --help` lists all eight subcommands (`up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo`) with descriptions; `up`, `down`, `bootstrap`, `seed`, and `lint` complete successfully on a clean clone, and any subcommand that fails exits non-zero rather than continuing. *(Revised in phase discussion — see 01-CONTEXT.md D-11.)*
   4. Endpoint, region, credentials, bucket names, and database name appear in `.env` and nowhere else; copying `.env.example` unchanged is sufficient to satisfy criteria 1-3, and `.env.example` documents every variable the project reads.
   5. `.gitattributes` forcing `*.sh text eol=lf` exists in the repository history at or before the commit introducing the first `.sh` file, and `run.sh` behaves identically when invoked from Git Bash on Windows and bash on Linux.
-**Plans**: 3 plans (indicative)
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Repo scaffolding — `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*` and `.planning/research/.cache/`, `docker-compose.yml` with pinned `floci/floci:1.5.11` + `tools` service on `python:3.11-slim` + profiled ephemeral `glue` service, `.env.example` with `PROJECT_NAME`-derived names, pinned `requirements.txt`
-- [ ] 01-02: `run.sh` — eight subcommands, `set -euo pipefail`, `--help`, platform-guarded `MSYS_NO_PATHCONV`, preflight checks (Docker, compose, `.env`) with actionable messages, lean output with detail-on-failure
-- [ ] 01-03: `catalog/schema/*.json` single source of truth (neutral shape, full catalog definition) + `catalog/bootstrap.py` (boto3, create-or-update, `CreatePartition` loop) + `data/sample/` synthetic SC temperature CSVs and the `seed` upload
+- [ ] 01-01-PLAN.md — Repo scaffolding and container topology: `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*`/`.planning/research/.cache/`/Terraform state, pinned `requirements.txt` + `docker/tools/Dockerfile` (python:3.11-slim) + `pyproject.toml`, `docker-compose.yml` with `floci/floci:1.5.11` and profiled `tools`/`glue` services, `.env.example` with `PROJECT_NAME`-derived names. Wave 1. [ENV-02, ENV-03, ENV-04, ENV-05, ENV-07]
+- [ ] 01-02-PLAN.md — `run.sh`: eight subcommands, `set -euo pipefail`, `--help`, exact-match dispatch, platform-guarded `MSYS_NO_PATHCONV`, six preflight checks with actionable messages, lean output with detail-on-failure. Wave 2. [ENV-06, RUN-01, RUN-02, RUN-03]
+- [ ] 01-03-PLAN.md — `catalog/schema/temperaturas.json` single source of truth + `catalog/config.py` naming/endpoint seam + `catalog/bootstrap.py` (boto3, create-or-update, per-partition registration loop) + `catalog/seed.py` and `data/sample/` synthetic SC temperature CSVs. Wave 3. [ENV-01, CAT-01, CAT-02, CAT-03, CAT-04]
 
 **Open questions to settle during planning**:
 - **Single source of truth for the table schema between `bootstrap.py` and Terraform (CAT-03).** Highest-stakes open question in the project — if it is not settled here, the two definitions diverge silently and the divergence only surfaces in production. Research proposes `catalog/schema/*.json` consumed by both; the mechanism by which Terraform consumes it is *not* decided. Whatever is chosen here is binding on Phase 3.
