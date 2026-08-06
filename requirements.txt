@@ -1,0 +1,8 @@
+# Pinned tooling dependencies for the `tools` service (docker/tools/Dockerfile).
+# Installed with pip, not uv (D-06) — zero new tooling for an adopter to learn.
+#
+# Compatible-release ranges (~=), not exact pins, per checkpoint resolution
+# 2026-08-06: patch updates accepted, minor bumps excluded. See 01-01-SUMMARY.md
+# "Deviations from Plan" for the full rationale.
+boto3~=1.43.0
+ruff~=0.16.0
