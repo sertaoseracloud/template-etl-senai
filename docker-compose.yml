@@ -1,0 +1,35 @@
+services:
+  floci:
+    image: floci/floci:1.5.11
+    ports:
+      - "${FLOCI_HOST_PORT:-4566}:4566"
+    environment:
+      FLOCI_HOSTNAME: floci
+      FLOCI_PORT: 4566
+      FLOCI_STORAGE_MODE: memory
+
+  tools:
+    build:
+      context: .
+      dockerfile: docker/tools/Dockerfile
+    profiles: ["tools"]
+    depends_on:
+      floci:
+        condition: service_healthy
+    working_dir: /workspace
+    volumes:
+      - .:/workspace:ro
+    env_file:
+      - .env
+
+  glue:
+    image: public.ecr.aws/glue/aws-glue-libs:5
+    profiles: ["glue"]
+    depends_on:
+      floci:
+        condition: service_healthy
+    working_dir: /home/hadoop/workspace
+    volumes:
+      - .:/home/hadoop/workspace
+    env_file:
+      - .env
