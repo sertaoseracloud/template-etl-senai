@@ -1,0 +1,21 @@
+# Credentials — never commit real AWS credentials to this public template
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+
+# Research fetch cache — noise in a public repo
+.planning/research/.cache/
+
+# Terraform (no .tf files exist yet; added now so a leak is impossible later)
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# OS
+.DS_Store
