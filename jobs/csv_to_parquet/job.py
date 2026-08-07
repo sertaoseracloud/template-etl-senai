@@ -29,15 +29,15 @@ for files larger than ~100 MB.
 
 from __future__ import annotations
 
+import argparse
 import os
 import sys
-import argparse
 
-from pyspark.sql import SparkSession
 from awsglue.context import GlueContext
 from awsglue.job import Job
+from pyspark.sql import SparkSession
 
-from transforms import read_csv, derive_temp_media, add_city_key, write_parquet
+from transforms import add_city_key, derive_temp_media, read_csv, write_parquet
 
 
 def apply_s3a_config(spark: SparkSession) -> tuple[SparkSession, str, str]:
@@ -52,8 +52,8 @@ def apply_s3a_config(spark: SparkSession) -> tuple[SparkSession, str, str]:
     """
     aws_access_key_id = os.environ["AWS_ACCESS_KEY_ID"]
     aws_secret_access_key = os.environ["AWS_SECRET_ACCESS_KEY"]
-    aws_region = os.environ["AWS_REGION"]
-    s3_endpoint = os.environ["S3_ENDPOINT"]
+    aws_region = os.environ["AWS_DEFAULT_REGION"]
+    s3_endpoint = os.environ["AWS_ENDPOINT_URL"]
     project_name = os.environ["PROJECT_NAME"]
 
     # Bucket names: same derivation as catalog/config.py
@@ -80,14 +80,14 @@ def main() -> None:
     parser.add_argument("--JOB_NAME", required=True)
     args = parser.parse_args()
 
-    spark = (
-        SparkSession.builder.appName(args.JOB_NAME).getOrCreate()
-    )
+    spark = SparkSession.builder.appName(args.JOB_NAME).getOrCreate()
     spark, project_name_raw_bucket, project_name_curated_bucket = apply_s3a_config(spark)
 
     glue_context = GlueContext(spark.sparkContext)
     job = Job(glue_context)
-    job.init(args.JOB_NAME, args)
+    # job.init expects a dict or a Java object, not argparse.Namespace.
+    # Convert Namespace to a plain dict so Glue's _get_object_id reflection works.
+    job.init(args.JOB_NAME, vars(args))
 
     raw_path = f"s3a://{project_name_raw_bucket}/temperaturas/"
     raw_df = read_csv(spark, raw_path)
@@ -97,9 +97,7 @@ def main() -> None:
     df = derive_temp_media(df)
 
     if df.count() == 0:
-        sys.exit(
-            "Job output is empty. Aborting -- check input data at: " + raw_path
-        )
+        sys.exit("Job output is empty. Aborting -- check input data at: " + raw_path)
 
     curated_path = f"s3a://{project_name_curated_bucket}/temperaturas/"
     write_parquet(df, curated_path, partition_cols=["data_medicao", "cidade_key"])
@@ -118,7 +116,7 @@ def main() -> None:
     print("=" * 43)
     print(f"Rows read   : {rows_read}")
     print(f"Rows written: {output_rows}")
-    print(f"Partitions  : 18 (data_medicao x cidade_key)")
+    print("Partitions  : 18 (data_medicao x cidade_key)")
     print(f"Input path  : s3a://{project_name_raw_bucket}/temperaturas/")
     print(f"Output path : s3a://{project_name_curated_bucket}/temperaturas/")
     print("=" * 43)

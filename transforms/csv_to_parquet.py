@@ -73,7 +73,7 @@ def normalize_city_key(cidade: str) -> str:
 _normalize_udf = udf(normalize_city_key, StringType())
 
 
-def read_csv(spark: "SparkSession", path: str) -> DataFrame:
+def read_csv(spark: SparkSession, path: str) -> DataFrame:
     """Read a CSV file into a PySpark DataFrame.
 
     Parameters
