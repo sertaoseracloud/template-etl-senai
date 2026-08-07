@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: local-environment-entrypoint-catalog-bootstrap
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-08-07T12:21:55.846Z"
+stopped_at: "Phase 01 Plan 03: Tasks 1-3 complete and committed; Task 4 (checkpoint:human-verify, gate=blocking, Windows Git Bash manual verification) PENDING - not auto-approved"
+last_updated: "2026-08-07T12:50:50.223Z"
 last_activity: 2026-08-07
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -75,6 +75,7 @@ Recent decisions affecting current work:
 - [Phase ?]: floci's built-in HEALTHCHECK confirmed via docker image inspect; no healthcheck: key authored in compose (01-01)
 - [Phase ?]: run.sh preflight/dispatcher/eight subcommands built exactly per 01-CONTEXT.md D-05/D-09-D-13, verified end-to-end against real Docker Desktop
 - [Phase ?]: pyproject.toml: extend-exclude=['.planning'] added to [tool.ruff] — ruff 0.16 formats Python fences in Markdown by default, which broke 'run.sh lint' against research docs (Rule 3 auto-fix)
+- [Phase ?]: [Phase 01-03] D-08 assumed Glue UpdateDatabase/UpdateTable; Floci implements neither (InvalidAction). Resolution: keep update_* calls (correct against real AWS), catch InvalidAction specifically, diff current vs desired and log drift instead of silently claiming sync. Schema edits require an emulator restart (./run.sh down && ./run.sh up) to apply locally. MUST land in docs/KNOWN_DIFFERENCES.md in Phase 4.
 
 ### Pending Todos
 
@@ -88,6 +89,7 @@ None yet.
 - **DuckDB vs Athena/Trino dialect gap (TEST-04) undetermined.** Decides whether the Athena assertion in Phase 2 is validation or theatre; the conclusion must reach `docs/KNOWN_DIFFERENCES.md` in Phase 4.
 - **Floci is a 2026 project with little third-party validation.** `BatchCreatePartition` is already known missing. Mitigation is structural: standard boto3 calls only, endpoint-only isolation, pinned image tag.
 - **IAM is never enforced locally.** No local run can validate the Terraform policy. Phase 3 authors it on faith; Phase 4 must say so plainly.
+- Plan 01-03 Task 4 (checkpoint:human-verify, gate=blocking) is pending - requires a human running the 11-step Windows Git Bash verification procedure in the plan. Plan 01-03 is not complete until this is approved.
 
 ## Deferred Items
 
@@ -99,6 +101,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-07T12:21:55.808Z
-Stopped at: Completed 01-02-PLAN.md
-Resume file: None
+Last session: 2026-08-07T12:50:39.612Z
+Stopped at: Phase 01 Plan 03: Tasks 1-3 complete and committed; Task 4 (checkpoint:human-verify, gate=blocking, Windows Git Bash manual verification) PENDING - not auto-approved
+Resume file: .planning/phases/01-local-environment-entrypoint-catalog-bootstrap/01-03-PLAN.md
