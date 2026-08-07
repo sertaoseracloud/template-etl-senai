@@ -1,0 +1,30 @@
+{
+  "table": "temperaturas",
+  "description": "Daily min/max/avg temperatures for Santa Catarina cities (synthetic example data, not a real meteorological record).",
+  "bucket": "curated",
+  "location": "temperaturas/",
+  "columns": [
+    { "name": "cidade", "type": "string", "comment": "City name" },
+    { "name": "temp_min", "type": "double", "comment": "Minimum temperature recorded for the day, in Celsius" },
+    { "name": "temp_max", "type": "double", "comment": "Maximum temperature recorded for the day, in Celsius" },
+    { "name": "temp_media", "type": "double", "comment": "Average temperature, derived on write by the csv_to_parquet job (not present in the raw CSV input)" }
+  ],
+  "partition_keys": [
+    { "name": "data_medicao", "type": "string", "comment": "Measurement date, YYYY-MM-DD" }
+  ],
+  "partitions": [
+    { "values": ["2026-01-15"] },
+    { "values": ["2026-01-16"] },
+    { "values": ["2026-01-17"] }
+  ],
+  "storage": {
+    "format": "parquet",
+    "input_format": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat",
+    "output_format": "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat",
+    "serde": "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"
+  },
+  "table_parameters": {
+    "classification": "parquet",
+    "EXTERNAL": "TRUE"
+  }
+}
