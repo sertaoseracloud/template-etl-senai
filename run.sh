@@ -118,6 +118,74 @@ Usage: ./run.sh <subcommand>
 EOF
 }
 
+# cmd_up — bring up the emulator, then bootstrap the catalog, then seed sample
+# data (D-09). Fixed order: compose-up, then bootstrap, then seed. run_step
+# propagates the first failing step's exit status and aborts the chain.
+cmd_up() {
+  preflight
+  run_step "start emulator" docker compose up -d --wait floci
+  cmd_bootstrap
+  cmd_seed
+  echo "Environment is up: floci emulator healthy, catalog bootstrapped, sample data seeded."
+}
+
+# cmd_down — stop the emulator and remove volumes/orphans so nothing lingers
+# from a memory-mode emulator or an anonymous volume left by run --rm.
+cmd_down() {
+  preflight
+  run_step "stop emulator" docker compose down -v --remove-orphans
+}
+
+# cmd_bootstrap — create or update the Glue database, table, and partitions
+# (D-05). Runs in the tools service, never the Glue image.
+cmd_bootstrap() {
+  preflight
+  run_step "bootstrap catalog" docker compose --profile tools run --rm tools python catalog/bootstrap.py
+}
+
+# cmd_seed — upload sample CSV data to the emulated S3 bucket.
+cmd_seed() {
+  preflight
+  run_step "seed sample data" docker compose --profile tools run --rm tools python catalog/seed.py
+}
+
+# cmd_job — run the csv_to_parquet Glue job (D-07). require_file runs before
+# any docker invocation so a Phase 1 clone fails instantly instead of
+# triggering an unwanted ~4.77 GB Glue image pull.
+cmd_job() {
+  require_file jobs/csv_to_parquet/job.py "jobs/csv_to_parquet/job.py not found. This subcommand is wired in Phase 1 but only functional from Phase 2 onward."
+  preflight
+  echo "First run downloads the AWS Glue image (~4.8 GB). This may take a while."
+  run_step "run csv_to_parquet job" docker compose --profile glue run --rm glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet
+}
+
+# cmd_test — run the pytest suite inside the Glue container. require_file
+# runs before any docker invocation for the same reason as cmd_job.
+cmd_test() {
+  require_file tests "tests not found. This subcommand is wired in Phase 1 but only functional from Phase 2 onward."
+  preflight
+  run_step "run pytest suite" docker compose --profile glue run --rm glue -c "python3 -m pytest --disable-warnings"
+}
+
+# cmd_lint — ruff check, then ruff format --check, both against the tools
+# service. Must exit 0 on a clean clone (no Python files yet) and continue to
+# do so once plan 01-03 adds them.
+cmd_lint() {
+  preflight
+  run_step "ruff check" docker compose --profile tools run --rm tools ruff check .
+  run_step "ruff format --check" docker compose --profile tools run --rm tools ruff format --check .
+}
+
+# cmd_demo — up, then job, then test, then a summary (D-10). The single
+# command the README leads with. On a Phase 1 clone this stops at cmd_job
+# with a non-zero exit, which is correct: the job script does not exist yet.
+cmd_demo() {
+  cmd_up
+  cmd_job
+  cmd_test
+  echo "Demo complete: environment up, csv_to_parquet job ran, pytest suite passed."
+}
+
 main() {
   local cmd="${1:-}"
 
