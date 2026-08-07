@@ -40,7 +40,7 @@ from awsglue.job import Job
 from transforms import read_csv, derive_temp_media, add_city_key, write_parquet
 
 
-def apply_s3a_config(spark: SparkSession) -> SparkSession:
+def apply_s3a_config(spark: SparkSession) -> tuple[SparkSession, str, str]:
     """Apply the complete S3A configuration block as one unit.
 
     Reads from os.environ directly. The bucket derivation
