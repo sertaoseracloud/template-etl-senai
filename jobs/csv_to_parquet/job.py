@@ -32,6 +32,12 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
+
+# Ensure the project root is on the Python path.
+# The working directory is /home/hadoop/workspace (bind-mounted project root)
+# but Python does not add cwd to sys.path automatically.
+sys.path.insert(0, str(Path.cwd()))
 
 from awsglue.context import GlueContext
 from awsglue.job import Job
