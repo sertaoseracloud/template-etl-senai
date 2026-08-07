@@ -29,6 +29,14 @@ def spark_session() -> SparkSession:
     spark.stop()
 
 
+def pytest_configure(config):
+    """Register custom markers used throughout the test suite."""
+    config.addinivalue_line(
+        "markers",
+        "athena: tests that query via the Floci Athena endpoint",
+    )
+
+
 def test_no_aws_sdk_imports():
     """Invariant: neither transforms/ nor tests/unit/ may import AWS SDK packages.
 

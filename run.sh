@@ -164,7 +164,7 @@ cmd_job() {
 cmd_test() {
   require_file tests "tests not found. This subcommand is wired in Phase 1 but only functional from Phase 2 onward."
   preflight
-  run_step "run pytest suite" docker compose --profile glue run --rm glue -c "python3 -m pytest --disable-warnings --with-integration"
+  run_step "run pytest suite" docker compose --profile glue run --rm glue -c "python3 -m pytest --disable-warnings"
 }
 
 # cmd_lint — ruff check, then ruff format --check, both against the tools

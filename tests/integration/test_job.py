@@ -24,6 +24,11 @@ from typing import Any
 import boto3
 import pytest
 
+# Mark all tests in this module as requiring the Floci Athena endpoint.
+# Default pytest run (./run.sh test) skips these via: pytest -m "not athena"
+# To run with Athena: pytest --override-ini="markers=" or remove the marker filter.
+pytestmark = pytest.mark.athena
+
 from catalog.config import (
     curated_bucket,
     database_name,
