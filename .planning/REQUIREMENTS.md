@@ -9,7 +9,7 @@
 
 ### Ambiente e containers
 
-- [ ] **ENV-01**: Desenvolvedor sobe todo o ambiente local com um único subcomando do `./run.sh`, sem nenhuma credencial AWS configurada
+- [x] **ENV-01**: Desenvolvedor sobe todo o ambiente local com um único subcomando do `./run.sh`, sem nenhuma credencial AWS configurada
 - [x] **ENV-02**: Imagens fixadas por versão no compose — `public.ecr.aws/glue/aws-glue-libs:5` e `floci/floci:1.5.11`, nunca `latest`
 - [x] **ENV-03**: O container Glue só executa após o Floci reportar saudável, via `depends_on: condition: service_healthy` (o Floci já traz `HEALTHCHECK` embutido)
 - [x] **ENV-04**: Endpoint, região, credenciais e nomes de recursos vêm exclusivamente do `.env`; o `.env.example` documenta todas as variáveis
@@ -26,10 +26,10 @@
 
 ### Data Catalog
 
-- [ ] **CAT-01**: Um script boto3 versionado cria o database e as tabelas no Glue Data Catalog do Floci
-- [ ] **CAT-02**: Partições são registradas via laço de `CreatePartition` — `BatchCreatePartition` não é suportado pelo Floci
-- [ ] **CAT-03**: Os schemas das tabelas vivem em uma única fonte de verdade, consumida tanto pelo script de bootstrap quanto pelo Terraform
-- [ ] **CAT-04**: O bootstrap é idempotente — rodar de novo não gera erro nem duplicata
+- [x] **CAT-01**: Um script boto3 versionado cria o database e as tabelas no Glue Data Catalog do Floci
+- [x] **CAT-02**: Partições são registradas via laço de `CreatePartition` — `BatchCreatePartition` não é suportado pelo Floci
+- [x] **CAT-03**: Os schemas das tabelas vivem em uma única fonte de verdade, consumida tanto pelo script de bootstrap quanto pelo Terraform
+- [x] **CAT-04**: O bootstrap é idempotente — rodar de novo não gera erro nem duplicata
 
 ### Job de ETL
 
@@ -104,7 +104,7 @@ Reconhecidos, mas fora do roadmap atual.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ENV-01 | Phase 1 | Pending |
+| ENV-01 | Phase 1 | Complete |
 | ENV-02 | Phase 1 | Complete |
 | ENV-03 | Phase 1 | Complete |
 | ENV-04 | Phase 1 | Complete |
@@ -115,10 +115,10 @@ Reconhecidos, mas fora do roadmap atual.
 | RUN-02 | Phase 1 | Complete |
 | RUN-03 | Phase 1 | Complete |
 | RUN-04 | Phase 2 | Pending |
-| CAT-01 | Phase 1 | Pending |
-| CAT-02 | Phase 1 | Pending |
-| CAT-03 | Phase 1 | Pending |
-| CAT-04 | Phase 1 | Pending |
+| CAT-01 | Phase 1 | Complete |
+| CAT-02 | Phase 1 | Complete |
+| CAT-03 | Phase 1 | Complete |
+| CAT-04 | Phase 1 | Complete |
 | JOB-01 | Phase 2 | Pending |
 | JOB-02 | Phase 2 | Pending |
 | JOB-03 | Phase 2 | Pending |
