@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import json
 import os
+from pathlib import Path
 
 import boto3
 
@@ -89,5 +90,5 @@ def load_schema(path: str) -> dict:
     Read mode only: nothing in this repository writes the schema file at
     runtime, which is what makes concurrent consumers safe.
     """
-    with open(path, encoding="utf-8") as handle:
+    with Path(path).open(encoding="utf-8") as handle:
         return json.load(handle)
