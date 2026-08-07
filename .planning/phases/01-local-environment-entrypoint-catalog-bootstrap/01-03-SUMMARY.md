@@ -21,7 +21,7 @@ affects: [phase-3-terraform (consumes catalog/schema/temperaturas.json), phase-4
 actuals:
   tokens: 6300
   tasks: 4
-  commits: 8
+  commits: 7
 
 tech-stack:
   added: []
