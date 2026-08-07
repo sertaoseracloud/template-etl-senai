@@ -87,8 +87,8 @@ Plans:
 Plans:
 
 - [x] 02-01: `transforms/csv_to_parquet.py` (pure, `DataFrame` in/out) + `tests/conftest.py` session-scoped Spark fixture + `tests/unit/` — TEST-01, TEST-02, TEST-05 delivered
-- [ ] 02-02: `data/sample/input.csv` + thin `jobs/csv_to_parquet/job.py` + `./run.sh job` wiring and the full S3A configuration block
-- [ ] 02-03: `tests/integration/` — content assertions via boto3 plus a dialect-portable Athena query; `./run.sh test` runs unit + integration
+- [x] 02-02: `data/sample/input.csv` + thin `jobs/csv_to_parquet/job.py` + `./run.sh job` wiring and the full S3A configuration block
+- [x] 02-03: `tests/integration/` — content assertions via boto3 plus a dialect-portable Athena query; `./run.sh test` runs unit + integration
 
 **Open questions to settle during planning**:
 
