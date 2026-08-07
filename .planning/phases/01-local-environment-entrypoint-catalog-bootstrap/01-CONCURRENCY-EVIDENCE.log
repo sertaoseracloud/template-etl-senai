@@ -1,0 +1,66 @@
+===================================================================
+EVIDENCE LOG - Phase 01 backstop verification (concurrency)
+Generated: 2026-08-07T13:44:22Z
+Host: Windows 10, Git Bash
+-------------------------------------------------------------------
+GNU bash, version 5.3.15(1)-release (x86_64-pc-cygwin)
+Docker version 28.4.0, build d8eb465
+Docker Compose version v2.39.2-desktop.1
+git HEAD: 9d3b5d2
+===================================================================
+
+### BACKSTOP 1: two concurrent './run.sh up' ###
+--- launching two ./run.sh up simultaneously ---
+exit code, invocation A: 0
+exit code, invocation B: 1
+--- raw output, invocation A ---
+[ok]   start emulator
+[ok]   bootstrap catalog
+[ok]   seed sample data
+Environment is up: floci emulator healthy, catalog bootstrapped, sample data seeded.
+--- raw output, invocation B ---
+[FAIL] start emulator
+ Network template_etl_default  Creating
+ Network template_etl_default  Error
+ Container template_etl-floci-1  Creating
+ Container template_etl-floci-1  Error response from daemon: Conflict. The container name "/template_etl-floci-1" is already in use by container "3951b3e94990e0ac34d28510fb524319143d204464077d63eab68e59f808b982". You have to remove (or rename) that container to be able to reuse that name.
+Error response from daemon: Conflict. The container name "/template_etl-floci-1" is already in use by container "3951b3e94990e0ac34d28510fb524319143d204464077d63eab68e59f808b982". You have to remove (or rename) that container to be able to reuse that name.
+--- catalog state after concurrent up (probe uses config.py naming: PROJECT_NAME.replace('-','_')+'_db') ---
+  databases : ['template_etl_db']
+  tables    : ['temperaturas']
+  partitions: total=3 distinct=3 values=['2026-01-15', '2026-01-16', '2026-01-17']
+  buckets   : ['template-etl-curated', 'template-etl-raw']
+  raw objs  : 3
+
+### BACKSTOP 2: two concurrent './run.sh bootstrap' ###
+--- round 1 (from clean down+up) ---
+  exit codes: A=0 B=0   | A said: [ok]   bootstrap catalog | B said: [ok]   bootstrap catalog
+  tables    : ['temperaturas']
+  partitions: total=3 distinct=3 values=['2026-01-15', '2026-01-16', '2026-01-17']
+--- round 2 (from clean down+up) ---
+  exit codes: A=0 B=0   | A said: [ok]   bootstrap catalog | B said: [ok]   bootstrap catalog
+  tables    : ['temperaturas']
+  partitions: total=3 distinct=3 values=['2026-01-15', '2026-01-16', '2026-01-17']
+--- round 3 (from clean down+up) ---
+  exit codes: A=0 B=0   | A said: [ok]   bootstrap catalog | B said: [ok]   bootstrap catalog
+  tables    : ['temperaturas']
+  partitions: total=3 distinct=3 values=['2026-01-15', '2026-01-16', '2026-01-17']
+
+### FLOCI FIDELITY: GetTables on a nonexistent database ###
+  (real AWS Glue raises EntityNotFoundException; Floci returns an empty list)
+  PROJECT_NAME env value: 'template-etl'
+  get_tables('template_etl_db') -> ['temperaturas']
+  get_tables('template-etl_db') -> []
+  get_tables('nao_existe_de_jeito_nenhum') -> []
+
+### TEARDOWN ###
+  [ok]   stop emulator
+  docker compose ps -> 0 service(s)
+  aws-glue-libs images present: 0
+  NOTE: './run.sh down' runs 'docker compose down -v --remove-orphans' and every
+  container invocation uses 'run --rm', so NO container named template_etl-* survives
+  this log by design. Absence in 'docker ps -a' is the expected end state, not
+  evidence the runs did not happen.
+===================================================================
+END OF EVIDENCE LOG
+===================================================================
