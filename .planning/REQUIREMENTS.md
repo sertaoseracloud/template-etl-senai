@@ -22,7 +22,7 @@
 - [x] **RUN-01**: `./run.sh --help` lista todos os subcomandos disponíveis com descrição
 - [x] **RUN-02**: O script expõe os subcomandos `up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo` (oito — revisado na discussão da Fase 1: `seed` separa dados de metadados, `demo` é o comando único que satisfaz o RUN-04)
 - [x] **RUN-03**: O script falha rápido (`set -euo pipefail`) e propaga código de saída não-zero em qualquer erro
-- [ ] **RUN-04**: Um único comando documentado leva um clone limpo até verde — ambiente de pé, catálogo populado, job executado e testes passando
+- [ ] **RUN-04**: Um único comando documentado leva um clone limpo até verde — ambiente de pé, catálogo populado, job executado e testes passando (02-03 complete; demo end-to-end verification pending)
 
 ### Data Catalog
 
@@ -33,18 +33,18 @@
 
 ### Job de ETL
 
-- [ ] **JOB-01**: O job de exemplo lê CSV do S3 (Floci) e escreve Parquet de volta
-- [ ] **JOB-02**: O entrypoint do job é fino — só faz parsing de argumentos e wiring de `GlueContext`; a lógica de transformação vive em módulo puro e importável
-- [ ] **JOB-03**: O job usa caminhos `s3a://` explícitos via `from_options` — nunca `from_catalog`, que não é redirecionável para emulador
-- [ ] **JOB-04**: O bloco completo de configuração S3A é aplicado como unidade (endpoint, path-style, SSL desabilitado, `SimpleAWSCredentialsProvider`)
-- [ ] **JOB-05**: O mesmo código de job roda contra a AWS real trocando apenas variáveis de ambiente
+- [x] **JOB-01**: O job de exemplo lê CSV do S3 (Floci) e escreve Parquet de volta
+- [x] **JOB-02**: O entrypoint do job é fino — só faz parsing de argumentos e wiring de `GlueContext`; a lógica de transformação vive em módulo puro e importável
+- [x] **JOB-03**: O job usa caminhos `s3a://` explícitos via `from_options` — nunca `from_catalog`, que não é redirecionável para emulador
+- [x] **JOB-04**: O bloco completo de configuração S3A é aplicado como unidade (endpoint, path-style, SSL desabilitado, `SimpleAWSCredentialsProvider`)
+- [x] **JOB-05**: O mesmo código de job roda contra a AWS real trocando apenas variáveis de ambiente
 
 ### Testes
 
 - [x] **TEST-01**: Testes unitários exercitam a lógica de transformação sem Glue e sem AWS
 - [x] **TEST-02**: Fixture de `SparkSession` com escopo de sessão em `conftest.py`, sem depender de `pytest-spark`
-- [ ] **TEST-03**: Teste de integração roda o job completo contra o Floci e afirma o **conteúdo** da saída, não apenas o código de saída
-- [ ] **TEST-04**: Teste de integração consulta o resultado via Athena, validando o caminho do Data Catalog
+- [x] **TEST-03**: Teste de integração roda o job completo contra o Floci e afirma o **conteúdo** da saída, não apenas o código de saída
+- [x] **TEST-04**: Teste de integração consulta o resultado via Athena, validando o caminho do Data Catalog
 - [x] **TEST-05**: A suíte inteira roda offline, sem nenhuma credencial AWS
 
 ### CI
