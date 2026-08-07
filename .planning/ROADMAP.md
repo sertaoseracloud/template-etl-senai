@@ -35,7 +35,7 @@ These come from research and shape the sequence. They are not preferences.
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Local Environment, Entrypoint & Catalog Bootstrap** - Clean clone to a healthy emulator and a populated Data Catalog with one command, no AWS credentials
+- [x] **Phase 1: Local Environment, Entrypoint & Catalog Bootstrap** - Clean clone to a healthy emulator and a populated Data Catalog with one command, no AWS credentials
 - [ ] **Phase 2: ETL Job & Green Test Suite** - The core value: one documented command takes a clean clone all the way to green, offline
 - [ ] **Phase 3: Terraform Module & Continuous Integration** - The proven loop codified for real AWS and re-proven on every PR and on a schedule
 - [ ] **Phase 4: Public Documentation & Template Launch** - A stranger can adopt it, adapt it, and knows exactly what local green does not prove
