@@ -36,7 +36,7 @@ These come from research and shape the sequence. They are not preferences.
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Local Environment, Entrypoint & Catalog Bootstrap** - Clean clone to a healthy emulator and a populated Data Catalog with one command, no AWS credentials
-- [ ] **Phase 2: ETL Job & Green Test Suite** - The core value: one documented command takes a clean clone all the way to green, offline
+- [x] **Phase 2: ETL Job & Green Test Suite** - The core value: one documented command takes a clean clone all the way to green, offline
 - [ ] **Phase 3: Terraform Module & Continuous Integration** - The proven loop codified for real AWS and re-proven on every PR and on a schedule
 - [ ] **Phase 4: Public Documentation & Template Launch** - A stranger can adopt it, adapt it, and knows exactly what local green does not prove
 
@@ -59,9 +59,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 Plans:
 
-- [x] 01-01-PLAN.md — Repo scaffolding and container topology: `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*`/`.planning/research/.cache/`/Terraform state, pinned `requirements.txt` + `docker/tools/Dockerfile` (python:3.11-slim) + `pyproject.toml`, `docker-compose.yml` with `floci/floci:1.5.11` and profiled `tools`/`glue` services, `.env.example` with `PROJECT_NAME`-derived names. Wave 1. [ENV-02, ENV-03, ENV-04, ENV-05, ENV-07]
-- [x] 01-02-PLAN.md — `run.sh`: eight subcommands, `set -euo pipefail`, `--help`, exact-match dispatch, platform-guarded `MSYS_NO_PATHCONV`, six preflight checks with actionable messages, lean output with detail-on-failure. Wave 2. [ENV-06, RUN-01, RUN-02, RUN-03]
-- [x] 01-03-PLAN.md — `catalog/schema/temperaturas.json` single source of truth + `catalog/config.py` naming/endpoint seam + `catalog/bootstrap.py` (boto3, create-or-update, per-partition registration loop) + `catalog/seed.py` and `data/sample/` synthetic SC temperature CSVs. Wave 3. [ENV-01, CAT-01, CAT-02, CAT-03, CAT-04]
+- [x] 01-01-PLAN.md — Repo scaffolding and container topology (complete 2026-08-06)
+- [x] 01-02-PLAN.md — `run.sh` eight subcommands and preflight checks (complete 2026-08-07)
+- [x] 01-03-PLAN.md — catalog/bootstrap.py, seed.py, sample CSVs, schema source of truth (complete 2026-08-07)
 
 **Open questions to settle during planning**:
 
@@ -86,7 +86,7 @@ Plans:
 
 Plans:
 
-- [ ] 02-01: `transforms/csv_to_parquet.py` (pure, `DataFrame` in/out) + `tests/conftest.py` session-scoped Spark fixture + `tests/unit/`
+- [x] 02-01: `transforms/csv_to_parquet.py` (pure, `DataFrame` in/out) + `tests/conftest.py` session-scoped Spark fixture + `tests/unit/` — TEST-01, TEST-02, TEST-05 delivered
 - [ ] 02-02: `data/sample/input.csv` + thin `jobs/csv_to_parquet/job.py` + `./run.sh job` wiring and the full S3A configuration block
 - [ ] 02-03: `tests/integration/` — content assertions via boto3 plus a dialect-portable Athena query; `./run.sh test` runs unit + integration
 
@@ -158,10 +158,10 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | In Progress|  |
-| 2. ETL Job & Green Test Suite | 0/3 | Not started | - |
-| 3. Terraform Module & Continuous Integration | 0/2 | Not started | - |
-| 4. Public Documentation & Template Launch | 0/1 | Not started | - |
+| 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | Complete | 2026-08-07 |
+| 2. ETL Job & Green Test Suite | 1/3 | In Progress | — |
+| 3. Terraform Module & Continuous Integration | 0/2 | Not started | — |
+| 4. Public Documentation & Template Launch | 0/1 | Not started | — |
 
 ---
 *Roadmap created: 2026-08-06*

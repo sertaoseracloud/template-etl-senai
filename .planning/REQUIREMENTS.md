@@ -41,11 +41,11 @@
 
 ### Testes
 
-- [ ] **TEST-01**: Testes unitários exercitam a lógica de transformação sem Glue e sem AWS
-- [ ] **TEST-02**: Fixture de `SparkSession` com escopo de sessão em `conftest.py`, sem depender de `pytest-spark`
+- [x] **TEST-01**: Testes unitários exercitam a lógica de transformação sem Glue e sem AWS
+- [x] **TEST-02**: Fixture de `SparkSession` com escopo de sessão em `conftest.py`, sem depender de `pytest-spark`
 - [ ] **TEST-03**: Teste de integração roda o job completo contra o Floci e afirma o **conteúdo** da saída, não apenas o código de saída
 - [ ] **TEST-04**: Teste de integração consulta o resultado via Athena, validando o caminho do Data Catalog
-- [ ] **TEST-05**: A suíte inteira roda offline, sem nenhuma credencial AWS
+- [x] **TEST-05**: A suíte inteira roda offline, sem nenhuma credencial AWS
 
 ### CI
 
@@ -124,8 +124,8 @@ Reconhecidos, mas fora do roadmap atual.
 | JOB-03 | Phase 2 | Pending |
 | JOB-04 | Phase 2 | Pending |
 | JOB-05 | Phase 2 | Pending |
-| TEST-01 | Phase 2 | Pending |
-| TEST-02 | Phase 2 | Pending |
+| TEST-01 | Phase 2 | Complete (02-01) |
+| TEST-02 | Phase 2 | Complete (02-01) |
 | TEST-03 | Phase 2 | Pending |
 | TEST-04 | Phase 2 | Pending |
 | TEST-05 | Phase 2 | Pending |

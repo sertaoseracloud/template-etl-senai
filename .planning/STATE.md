@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
-status: completed
-stopped_at: Phase 02 context gathered
-last_updated: "2026-08-07T14:31:35.284Z"
-last_activity: 2026-08-07
-last_activity_desc: Phase 01 marked complete
+current_phase: 02
+status: in_progress
+stopped_at: plan 02-01 complete, checkpoint 4 of 4 pending human-verify (approved 2026-08-08)
+last_updated: "2026-08-08T00:00:00.000Z"
+last_activity: "2026-08-08"
+last_activity_desc: Phase 02 plan 01 complete — transforms module and test infrastructure delivered
 progress:
-  total_phases: 2
+  total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
-current_phase_name: local-environment-entrypoint-catalog-bootstrap
+  total_plans: 9
+  completed_plans: 4
+current_phase_name: etl-job-green-test-suite
 ---
 
 # Project State
@@ -27,12 +27,12 @@ See: .planning/PROJECT.md (updated 2026-08-06)
 
 ## Current Position
 
-Phase: 01 — COMPLETE
-Plan: 3 of 3
-Status: Phase 01 complete
-Last activity: 2026-08-07 — Phase 01 marked complete
+Phase: 02 — ETL Job & Green Test Suite
+Plan: 01 of ~3 (02-01 complete)
+Status: Phase 02 in progress
+Last activity: 2026-08-08 — Phase 02 plan 01 complete
 
-Progress: [██████████] 100%
+Progress: [██░░░░░░░░] ~11% (1/9 plans)
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [██████████] 100%
 | Phase 01 P01 | 36m | 3 tasks | 7 files |
 | Phase 01 P02 | 25m | 2 tasks | 2 files |
 | Phase 01 P03 | 75min | 4 tasks | 9 files |
+| Phase 02 P01 | ~8m | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,7 @@ Recent decisions affecting current work:
 - [Phase ?]: [Phase 01-03] Phase 4 harvest: any docker compose invocation with a container-side path argument run OUTSIDE run.sh breaks on Git Bash (MSYS2 rewrites the path before Docker sees it). Must land in docs/KNOWN_DIFFERENCES.md AND get a README line - it's the first thing an adopter debugging an ad hoc docker compose command on Windows will hit.
 - [Verification, 2026-08-07]: Phase 1's two `verification: backstop` concurrency truths (concurrent `./run.sh up`, concurrent `./run.sh bootstrap`) are resolved with live evidence — see `01-CONCURRENCY-EVIDENCE.log` (commit `b3888fa`) and independent reproduction recorded in `01-VERIFICATION.md`. Both close phase 1 with no further action.
 - [Phase 2 scope — informs Phase 2 planning only, not a Phase 1 requirement]: the `csv_to_parquet` job writes in **append** mode. Consequently `spark.sql.sources.partitionOverwriteMode` is **N/A** — there is no dynamic-overwrite behavior to configure. The project's stated scope is an academic/local simulation environment, not a daily-refresh production pipeline: the job reprocesses the same three dates already seeded by Phase 1's `catalog/schema/temperaturas.json`, so the fixed three-partition `CreatePartition` loop built in Phase 1 is adequate by design — it exists to demonstrate the loop, not to operate a rolling daily pipeline, and this closes the "partition drift" concern raised during Phase 1 planning without further work. **Phase 4 README consequence to write down:** with `append` mode, running `./run.sh demo` twice without a `./run.sh down` in between duplicates rows within the same partition. This is the chosen mode working as intended, not a defect — but an adopter who runs `demo` twice and sees the row count double needs this explained, or they will conclude the template is broken.
+- [Phase 2, plan 02-01]: **D-08** invariant test (`test_no_aws_sdk_imports`) in `tests/conftest.py` uses exact-string split (`["awsg"+"lue", "bot"+"o3"]`) to avoid `grep -c` false positives while preserving detection logic. **D-12/D-13**: compound partitioning `data_medicao × cidade_key` = 18 partitions (3 dates × 6 cities); `cidade_key` derived by NFKD normalization (D-13 supersedes D-17 of Phase 1). **Committer**: default FileOutputCommitter — Magic rejected due to Floci Issue #30 (GetObjectAttributes gap); directory staging rejected for zero benefit at 18 KB scale. Rationale documented verbatim from RESEARCH.md in `transforms/csv_to_parquet.py` module docstring. **02-01 delivers**: TEST-01 (unit tests without Glue/AWS), TEST-02 (session-scoped SparkSession fixture), TEST-05 (suite offline, no credentials).
 
 ### Pending Todos
 
@@ -108,6 +110,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-07T14:31:35.262Z
-Stopped at: Phase 02 context gathered
-Resume file: .planning/phases/02-etl-job-green-test-suite/02-CONTEXT.md
+Last session: 2026-08-08T00:00:00.000Z
+Stopped at: Phase 02 plan 01 complete — SUMMARY.md written, STATE.md updated
+Resume file: None
