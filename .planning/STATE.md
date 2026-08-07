@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: local-environment-entrypoint-catalog-bootstrap
 status: executing
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-08-06T20:06:07.182Z"
-last_activity: 2026-08-06
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-08-07T12:21:55.846Z"
+last_activity: 2026-08-07
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 3
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -30,9 +30,9 @@ See: .planning/PROJECT.md (updated 2026-08-06)
 Phase: 01 (local-environment-entrypoint-catalog-bootstrap) — EXECUTING
 Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-08-06 — Phase 01 execution started
+Last activity: 2026-08-07 — Phase 01 execution started
 
-Progress: [███░░░░░░░] 33%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [███░░░░░░░] 33%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | 36m | 3 tasks | 7 files |
+| Phase 01 P02 | 25m | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,8 @@ Recent decisions affecting current work:
 - [Roadmap]: `terraform plan` is not a success criterion anywhere — it needs real credentials, and PROJECT.md excludes applying to a real account from "done". `init -backend=false` + `fmt -check` + `validate` are the offline-verifiable checks.
 - [Phase ?]: boto3/ruff pinned by compatible-release range (~=), not exact ==, per checkpoint-approved operator decision (01-01)
 - [Phase ?]: floci's built-in HEALTHCHECK confirmed via docker image inspect; no healthcheck: key authored in compose (01-01)
+- [Phase ?]: run.sh preflight/dispatcher/eight subcommands built exactly per 01-CONTEXT.md D-05/D-09-D-13, verified end-to-end against real Docker Desktop
+- [Phase ?]: pyproject.toml: extend-exclude=['.planning'] added to [tool.ruff] — ruff 0.16 formats Python fences in Markdown by default, which broke 'run.sh lint' against research docs (Rule 3 auto-fix)
 
 ### Pending Todos
 
@@ -96,6 +99,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-08-06T20:06:07.157Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-08-07T12:21:55.808Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

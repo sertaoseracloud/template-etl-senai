@@ -14,14 +14,14 @@
 - [x] **ENV-03**: O container Glue só executa após o Floci reportar saudável, via `depends_on: condition: service_healthy` (o Floci já traz `HEALTHCHECK` embutido)
 - [x] **ENV-04**: Endpoint, região, credenciais e nomes de recursos vêm exclusivamente do `.env`; o `.env.example` documenta todas as variáveis
 - [x] **ENV-05**: O repositório traz `.gitattributes` forçando `*.sh text eol=lf`, commitado antes do primeiro script shell
-- [ ] **ENV-06**: O `run.sh` funciona identicamente no Git Bash (Windows) e no bash (Linux), com `MSYS_NO_PATHCONV=1` guardado por plataforma
+- [x] **ENV-06**: O `run.sh` funciona identicamente no Git Bash (Windows) e no bash (Linux), com `MSYS_NO_PATHCONV=1` guardado por plataforma
 - [x] **ENV-07**: O container Glue é invocado como tarefa efêmera (`docker compose run --rm`) atrás de um `profile`, não como serviço longo
 
 ### Entrypoint `run.sh`
 
-- [ ] **RUN-01**: `./run.sh --help` lista todos os subcomandos disponíveis com descrição
-- [ ] **RUN-02**: O script expõe os subcomandos `up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo` (oito — revisado na discussão da Fase 1: `seed` separa dados de metadados, `demo` é o comando único que satisfaz o RUN-04)
-- [ ] **RUN-03**: O script falha rápido (`set -euo pipefail`) e propaga código de saída não-zero em qualquer erro
+- [x] **RUN-01**: `./run.sh --help` lista todos os subcomandos disponíveis com descrição
+- [x] **RUN-02**: O script expõe os subcomandos `up`, `down`, `bootstrap`, `seed`, `job`, `test`, `lint`, `demo` (oito — revisado na discussão da Fase 1: `seed` separa dados de metadados, `demo` é o comando único que satisfaz o RUN-04)
+- [x] **RUN-03**: O script falha rápido (`set -euo pipefail`) e propaga código de saída não-zero em qualquer erro
 - [ ] **RUN-04**: Um único comando documentado leva um clone limpo até verde — ambiente de pé, catálogo populado, job executado e testes passando
 
 ### Data Catalog
@@ -109,11 +109,11 @@ Reconhecidos, mas fora do roadmap atual.
 | ENV-03 | Phase 1 | Complete |
 | ENV-04 | Phase 1 | Complete |
 | ENV-05 | Phase 1 | Complete |
-| ENV-06 | Phase 1 | Pending |
+| ENV-06 | Phase 1 | Complete |
 | ENV-07 | Phase 1 | Complete |
-| RUN-01 | Phase 1 | Pending |
-| RUN-02 | Phase 1 | Pending |
-| RUN-03 | Phase 1 | Pending |
+| RUN-01 | Phase 1 | Complete |
+| RUN-02 | Phase 1 | Complete |
+| RUN-03 | Phase 1 | Complete |
 | RUN-04 | Phase 2 | Pending |
 | CAT-01 | Phase 1 | Pending |
 | CAT-02 | Phase 1 | Pending |

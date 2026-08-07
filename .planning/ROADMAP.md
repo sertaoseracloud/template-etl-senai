@@ -55,12 +55,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Endpoint, region, credentials, bucket names, and database name appear in `.env` and nowhere else; copying `.env.example` unchanged is sufficient to satisfy criteria 1-3, and `.env.example` documents every variable the project reads.
   5. `.gitattributes` forcing `*.sh text eol=lf` exists in the repository history at or before the commit introducing the first `.sh` file, and `run.sh` behaves identically when invoked from Git Bash on Windows and bash on Linux.
 
-**Plans**: 1/3 plans executed
+**Plans**: 2/3 plans executed
 
 Plans:
 
 - [x] 01-01-PLAN.md — Repo scaffolding and container topology: `.gitattributes` (before any `.sh`), `.gitignore` covering `.env*`/`.planning/research/.cache/`/Terraform state, pinned `requirements.txt` + `docker/tools/Dockerfile` (python:3.11-slim) + `pyproject.toml`, `docker-compose.yml` with `floci/floci:1.5.11` and profiled `tools`/`glue` services, `.env.example` with `PROJECT_NAME`-derived names. Wave 1. [ENV-02, ENV-03, ENV-04, ENV-05, ENV-07]
-- [ ] 01-02-PLAN.md — `run.sh`: eight subcommands, `set -euo pipefail`, `--help`, exact-match dispatch, platform-guarded `MSYS_NO_PATHCONV`, six preflight checks with actionable messages, lean output with detail-on-failure. Wave 2. [ENV-06, RUN-01, RUN-02, RUN-03]
+- [x] 01-02-PLAN.md — `run.sh`: eight subcommands, `set -euo pipefail`, `--help`, exact-match dispatch, platform-guarded `MSYS_NO_PATHCONV`, six preflight checks with actionable messages, lean output with detail-on-failure. Wave 2. [ENV-06, RUN-01, RUN-02, RUN-03]
 - [ ] 01-03-PLAN.md — `catalog/schema/temperaturas.json` single source of truth + `catalog/config.py` naming/endpoint seam + `catalog/bootstrap.py` (boto3, create-or-update, per-partition registration loop) + `catalog/seed.py` and `data/sample/` synthetic SC temperature CSVs. Wave 3. [ENV-01, CAT-01, CAT-02, CAT-03, CAT-04]
 
 **Open questions to settle during planning**:
@@ -158,7 +158,7 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Local Environment, Entrypoint & Catalog Bootstrap | 1/3 | In Progress|  |
+| 1. Local Environment, Entrypoint & Catalog Bootstrap | 2/3 | In Progress|  |
 | 2. ETL Job & Green Test Suite | 0/3 | Not started | - |
 | 3. Terraform Module & Continuous Integration | 0/2 | Not started | - |
 | 4. Public Documentation & Template Launch | 0/1 | Not started | - |
