@@ -119,11 +119,11 @@ Reconhecidos, mas fora do roadmap atual.
 | CAT-02 | Phase 1 | Complete |
 | CAT-03 | Phase 1 | Complete |
 | CAT-04 | Phase 1 | Complete |
-| JOB-01 | Phase 2 | Pending |
-| JOB-02 | Phase 2 | Pending |
-| JOB-03 | Phase 2 | Pending |
-| JOB-04 | Phase 2 | Pending |
-| JOB-05 | Phase 2 | Pending |
+| JOB-01 | Phase 2 | Pending (02-02 committed; end-to-end verification pending) |
+| JOB-02 | Phase 2 | Pending (02-02 committed; end-to-end verification pending) |
+| JOB-03 | Phase 2 | Pending (02-02 committed; end-to-end verification pending) |
+| JOB-04 | Phase 2 | Pending (02-02 committed; end-to-end verification pending) |
+| JOB-05 | Phase 2 | Pending (02-02 committed; end-to-end verification pending) |
 | TEST-01 | Phase 2 | Complete (02-01) |
 | TEST-02 | Phase 2 | Complete (02-01) |
 | TEST-03 | Phase 2 | Pending |

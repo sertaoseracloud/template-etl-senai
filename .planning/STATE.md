@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 02
-status: in_progress
-stopped_at: plan 02-01 complete, checkpoint 4 of 4 pending human-verify (approved 2026-08-08)
-last_updated: "2026-08-08T00:00:00.000Z"
-last_activity: "2026-08-08"
-last_activity_desc: Phase 02 plan 01 complete — transforms module and test infrastructure delivered
-progress:
-  total_phases: 4
-  completed_phases: 1
-  total_plans: 9
-  completed_plans: 4
 current_phase_name: etl-job-green-test-suite
+status: in_progress
+stopped_at: plan 02-02 partial complete — Task 3 blocked: ./run.sh up precondition unmet (.env absent, Docker not running)
+last_updated: "2026-08-07T19:23:58.506Z"
+last_activity: 2026-08-09
+last_activity_desc: Phase 02 plan 02 partial — Tasks 1-2 committed; Task 3 blocked (precondition unmet)
+progress:
+  total_phases: 2
+  completed_phases: 1
+  total_plans: 6
+  completed_plans: 4
 ---
 
 # Project State
@@ -62,6 +62,7 @@ Progress: [██░░░░░░░░] ~11% (1/9 plans)
 | Phase 01 P02 | 25m | 2 tasks | 2 files |
 | Phase 01 P03 | 75min | 4 tasks | 9 files |
 | Phase 02 P01 | ~8m | 3 tasks | 6 files |
+| Phase 02 P02 | ~5m | 3 tasks (2/3 committed; 1 blocked) | 4 files |
 
 ## Accumulated Context
 
@@ -84,9 +85,7 @@ Recent decisions affecting current work:
 - [Phase 2 scope — informs Phase 2 planning only, not a Phase 1 requirement]: the `csv_to_parquet` job writes in **append** mode. Consequently `spark.sql.sources.partitionOverwriteMode` is **N/A** — there is no dynamic-overwrite behavior to configure. The project's stated scope is an academic/local simulation environment, not a daily-refresh production pipeline: the job reprocesses the same three dates already seeded by Phase 1's `catalog/schema/temperaturas.json`, so the fixed three-partition `CreatePartition` loop built in Phase 1 is adequate by design — it exists to demonstrate the loop, not to operate a rolling daily pipeline, and this closes the "partition drift" concern raised during Phase 1 planning without further work. **Phase 4 README consequence to write down:** with `append` mode, running `./run.sh demo` twice without a `./run.sh down` in between duplicates rows within the same partition. This is the chosen mode working as intended, not a defect — but an adopter who runs `demo` twice and sees the row count double needs this explained, or they will conclude the template is broken.
 - [Phase 2, plan 02-01]: **D-08** invariant test (`test_no_aws_sdk_imports`) in `tests/conftest.py` uses exact-string split (`["awsg"+"lue", "bot"+"o3"]`) to avoid `grep -c` false positives while preserving detection logic. **D-12/D-13**: compound partitioning `data_medicao × cidade_key` = 18 partitions (3 dates × 6 cities); `cidade_key` derived by NFKD normalization (D-13 supersedes D-17 of Phase 1). **Committer**: default FileOutputCommitter — Magic rejected due to Floci Issue #30 (GetObjectAttributes gap); directory staging rejected for zero benefit at 18 KB scale. Rationale documented verbatim from RESEARCH.md in `transforms/csv_to_parquet.py` module docstring. **02-01 delivers**: TEST-01 (unit tests without Glue/AWS), TEST-02 (session-scoped SparkSession fixture), TEST-05 (suite offline, no credentials).
 
-### Pending Todos
-
-None yet.
+- **NEW (02-02): Task 3 blocked — ./run.sh up precondition unmet.** `.env` is absent (not committed, not on disk), Docker containers are not running, and Python is not installed on the host. The `./run.sh up` step (which runs `compose up --wait floci`, then `bootstrap`, then `seed`) cannot be executed by this agent. Resolution: the operator must create `.env` from `.env.example`, ensure Docker is running, then run `./run.sh up`. After the environment is up, the agent can resume from Task 3.
 
 ### Blockers/Concerns
 

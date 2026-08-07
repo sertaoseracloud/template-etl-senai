@@ -159,7 +159,7 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | Complete | 2026-08-07 |
-| 2. ETL Job & Green Test Suite | 1/3 | In Progress | — |
+| 2. ETL Job & Green Test Suite | 2/3 | In Progress | — |
 | 3. Terraform Module & Continuous Integration | 0/2 | Not started | — |
 | 4. Public Documentation & Template Launch | 0/1 | Not started | — |
 
