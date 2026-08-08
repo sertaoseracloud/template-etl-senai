@@ -1,0 +1,20 @@
+{
+  "test": "csv_to_parquet_benchmark",
+  "timestamp": "2026-08-08T22:11:50.706628+00:00",
+  "summary": {
+    "total_runs": 1,
+    "successful_runs": 0,
+    "avg_throughput_rows_per_sec": 0.0
+  },
+  "results": [
+    {
+      "rows": 100,
+      "elapsed_seconds": 0.296,
+      "throughput_rows_per_sec": 0,
+      "timestamp": "",
+      "s3_key": "",
+      "success": false,
+      "error": "<3>WSL (822736 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: No such file or directory\n"
+    }
+  ]
+}

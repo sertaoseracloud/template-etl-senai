@@ -1,0 +1,8 @@
+{
+  "test": "csv_to_parquet_perf",
+  "rows_generated": 100,
+  "elapsed_seconds": 28.259,
+  "throughput_rows_per_sec": 3.54,
+  "timestamp": "20260808T221121Z",
+  "s3_key": "temperaturas/perf_test_100.csv"
+}

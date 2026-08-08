@@ -1,0 +1,29 @@
+{
+  "test": "csv_to_parquet_benchmark",
+  "timestamp": "2026-08-08T22:32:30.015975+00:00",
+  "summary": {
+    "total_runs": 2,
+    "successful_runs": 2,
+    "avg_throughput_rows_per_sec": 164.84
+  },
+  "results": [
+    {
+      "rows": 1000,
+      "elapsed_seconds": 35.51,
+      "throughput_rows_per_sec": 28.16,
+      "timestamp": "2026-08-08T22:33:05.531808+00:00",
+      "s3_key": "",
+      "success": true,
+      "error": null
+    },
+    {
+      "rows": 10000,
+      "elapsed_seconds": 33.165,
+      "throughput_rows_per_sec": 301.52,
+      "timestamp": "2026-08-08T22:33:40.698448+00:00",
+      "s3_key": "",
+      "success": true,
+      "error": null
+    }
+  ]
+}

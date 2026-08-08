@@ -1,0 +1,38 @@
+{
+  "test": "csv_to_parquet_benchmark",
+  "timestamp": "2026-08-08T22:01:23.382251+00:00",
+  "summary": {
+    "total_runs": 3,
+    "successful_runs": 0,
+    "avg_throughput_rows_per_sec": 0.0
+  },
+  "results": [
+    {
+      "rows": 1000,
+      "elapsed_seconds": 0.14,
+      "throughput_rows_per_sec": 0,
+      "timestamp": "",
+      "s3_key": "",
+      "success": false,
+      "error": "<3>WSL (816185 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: No such file or directory\n"
+    },
+    {
+      "rows": 10000,
+      "elapsed_seconds": 0.184,
+      "throughput_rows_per_sec": 0,
+      "timestamp": "",
+      "s3_key": "",
+      "success": false,
+      "error": "<3>WSL (816207 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: No such file or directory\n"
+    },
+    {
+      "rows": 100000,
+      "elapsed_seconds": 0.168,
+      "throughput_rows_per_sec": 0,
+      "timestamp": "",
+      "s3_key": "",
+      "success": false,
+      "error": "<3>WSL (816223 - Relay) ERROR: CreateProcessCommon:818: execvpe(/bin/bash) failed: No such file or directory\n"
+    }
+  ]
+}

@@ -79,6 +79,11 @@ def glue_client():
     return boto3.client("glue", endpoint_url=endpoint_url())
 
 
+def athena_client():
+    """Return a boto3 Athena client bound to the explicit emulator endpoint."""
+    return boto3.client("athena", endpoint_url=endpoint_url())
+
+
 def s3_client():
     """Return a boto3 S3 client bound to the explicit emulator endpoint."""
     return boto3.client("s3", endpoint_url=endpoint_url())

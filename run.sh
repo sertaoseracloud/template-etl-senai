@@ -122,6 +122,10 @@ Usage: ./run.sh <subcommand>
   lint       Run ruff check and ruff format --check inside the tools container
   demo       Run up, then job, then test, then print a summary
   perf-test  Generate test data and run performance benchmark (perf-test <n_rows>)
+  benchmark Run automated benchmark suite with multiple row counts (benchmark)
+  validate-s3    Validate performance test data in S3 (validate-s3 <n_rows>)
+  validate-spark Validate processed Parquet data via PySpark (validate-spark)
+  validate-athena Validate data via Athena queries (validate-athena)
 EOF
 }
 
@@ -240,14 +244,12 @@ cmd_perf_test() {
   preflight
 
   # Create results directory
-  mkdir -p results
+  mkdir -p results data/perf
 
-  # Generate temp CSV
-  local tmp_csv
-  tmp_csv="$(mktemp --suffix=.csv)"
-  trap "rm -f '$tmp_csv'" EXIT
-
-  run_step "generate test data ($n_rows rows)" python scripts/generate_test_data.py --rows "$n_rows" --output "$tmp_csv"
+  # Generate temp CSV to data/perf (accessible by both host and container)
+  local n_rows
+  n_rows="$1"
+  run_step "generate test data ($n_rows rows)" python scripts/generate_test_data.py --rows "$n_rows" --output "data/perf/perf_test_${n_rows}.csv"
 
   # Upload to S3 and capture key
   local s3_key
@@ -255,8 +257,8 @@ cmd_perf_test() {
 import sys
 sys.path.insert(0, '/workspace')
 from tools.s3_upload import upload_file
-print(upload_file('$tmp_csv'))
-" 2>/dev/null)"
+print(upload_file('/workspace/data/perf/perf_test_${n_rows}.csv'))
+" 2>/dev/null | tail -n1)"
 
   # Measure end-to-end timing
   local start_time end_time elapsed
@@ -308,7 +310,7 @@ main() {
       usage >&2
       exit 2
       ;;
-    up|down|bootstrap|seed|upload|watch|job|test|lint|demo|perf-test)
+    up|down|bootstrap|seed|upload|watch|job|test|lint|demo|perf-test|benchmark|validate-s3|validate-spark|validate-athena)
       ;;
     *)
       echo "Unknown subcommand: ${cmd}" >&2
@@ -317,7 +319,7 @@ main() {
       ;;
   esac
 
-  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ]; then
+  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ] && [ "$cmd" != "benchmark" ] && [ "$cmd" != "validate-s3" ]; then
     echo "Unexpected extra argument: ${2}" >&2
     exit 2
   fi
@@ -334,7 +336,45 @@ main() {
     lint) cmd_lint ;;
     demo) cmd_demo ;;
     perf-test) cmd_perf_test "$2" ;;
+    benchmark) cmd_benchmark "${2:-}" ;;
+    validate-s3) cmd_validate_s3 "${2:-}" ;;
+    validate-spark) cmd_validate_spark ;;
+    validate-athena) cmd_validate_athena ;;
   esac
+}
+
+# cmd_benchmark — run automated performance benchmark suite with multiple row counts.
+cmd_benchmark() {
+  preflight
+  local benchmark_args="${1:-}"
+  run_step "run performance benchmark" python scripts/run_perf_benchmark.py $benchmark_args
+}
+
+# cmd_validate_s3 — validate performance test data in S3.
+# Validates CSV files exist in the raw bucket with correct row counts.
+cmd_validate_s3() {
+  local n_rows="${1:-}"
+  if [ -z "$n_rows" ]; then
+    echo "Usage: ./run.sh validate-s3 <n_rows>" >&2
+    exit 1
+  fi
+  preflight
+  run_step "validate S3 data ($n_rows rows)" docker compose --profile tools run --rm tools python scripts/validate_perf_output.py --rows "$n_rows"
+}
+
+# cmd_validate_spark — validate processed Parquet data via PySpark.
+# Reads Parquet from curated bucket and validates schema, row counts, and statistics.
+cmd_validate_spark() {
+  preflight
+  run_step "validate data via PySpark" docker compose --profile glue run --rm glue spark-submit scripts/validate_spark.py
+}
+
+# cmd_validate_athena — validate data via Athena queries.
+# Note: Returns empty results on Windows (Athena mock mode).
+# For real Athena, use: docker compose --profile athena up -d
+cmd_validate_athena() {
+  preflight
+  run_step "validate data via Athena" docker compose --profile tools run --rm tools python scripts/validate_athena.py
 }
 
 main "$@"
