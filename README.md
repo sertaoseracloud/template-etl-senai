@@ -107,6 +107,40 @@ Running locally is not the same as running on real AWS. Key differences:
 - **`from_catalog` is unavailable locally** — the Glue Catalog client does not redirect to the emulator. The job uses explicit `s3a://` paths.
 - **Terraform is validated offline, never applied** — `init -backend=false`, `fmt -check`, and `validate` run in CI. Applying to a real account requires credentials.
 
+---
+
+## Event-Driven Triggers (EventBridge)
+
+**Floci does NOT support EventBridge.** The local development environment uses a polling workaround instead.
+
+### Local Development: Polling Simulation
+
+The `./run.sh watch` command polls the emulated S3 bucket for new files and triggers the Glue job with the `--file-key` parameter:
+
+```bash
+# Upload a file (simulates S3 PUT event)
+./run.sh upload data/sample/temperaturas_2026-01-15.csv
+
+# Start watching for new files
+./run.sh watch
+```
+
+### Production: EventBridge Trigger
+
+In production on real AWS, EventBridge handles the event-driven flow automatically:
+
+1. S3 receives a new object (ObjectCreated event)
+2. EventBridge rule detects the event
+3. EventBridge triggers the Glue job with `--file-key` parameter
+4. Job processes only the specified file
+
+The `--file-key` parameter and `FILE_KEY` environment variable enable this pattern:
+
+```bash
+# Job accepts --file-key from EventBridge
+spark-submit job.py --JOB_NAME csv_to_parquet --file-key temperaturas/file.csv
+```
+
 Full table at [docs/KNOWN_DIFFERENCES.md](docs/KNOWN_DIFFERENCES.md).
 
 ---
