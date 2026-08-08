@@ -14,7 +14,7 @@
 
 #### Summary
 
-- [ ] **Phase 5: Event Trigger & Local Simulation** — Terraform EventBridge infrastructure + local trigger simulation for Floci validation (10 requirements)
+- [x] **Phase 5: Event Trigger & Local Simulation** — Terraform EventBridge infrastructure + local trigger simulation for Floci validation (10 requirements)
 - [ ] **Phase 6: Performance Testing** — Dynamic test data generator + performance benchmarks (8 requirements)
 
 ---
@@ -41,8 +41,8 @@
 10. `terraform fmt -check` and `validate` pass offline
 
 **Plans**: 2 plans ✅
-- [x] 05-01-PLAN.md — S3 Trigger Simulation: job --file-key, run.sh upload/watch, local flow validation
-- [x] 05-02-PLAN.md — Terraform EventBridge: eventbridge module, IAM role, Input Transformer
+- [x] 05-01-PLAN.md — S3 Trigger Simulation: job --file-key, run.sh upload/watch, local flow validation ✅
+- [x] 05-02-PLAN.md — Terraform EventBridge: eventbridge module, IAM role, Input Transformer ✅
 
 **UI hint**: no
 
@@ -67,7 +67,8 @@
 7. IAM policy restricts EventBridge invoke to specific job (least privilege)
 8. Local performance test validates the trigger mechanism end-to-end
 
-**Plans**: TBD
+**Plans**: 1 plan (in progress)
+- [ ] 06-01-PLAN.md — Performance Testing Infrastructure (generate_test_data.py, perf-test, JSON results)
 
 **UI hint**: no
 
@@ -77,7 +78,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 5. Event Trigger & Local Simulation | 0/2 | Not started | - |
+| 5. Event Trigger & Local Simulation | 2/2 ✅ | Complete | 2026-08-08 |
 | 6. Performance Testing | 0/N | Not started | - |
 
 ---

@@ -121,6 +121,7 @@ Usage: ./run.sh <subcommand>
   test       Run the pytest suite inside the Glue container
   lint       Run ruff check and ruff format --check inside the tools container
   demo       Run up, then job, then test, then print a summary
+  perf-test  Generate test data and run performance benchmark (perf-test <n_rows>)
 EOF
 }
 
@@ -221,6 +222,82 @@ cmd_demo() {
   echo "Demo complete: environment up, csv_to_parquet job ran, pytest suite passed."
 }
 
+# cmd_perf_test — generate test data, upload to S3, run job, measure throughput.
+# Writes structured JSON results to results/perf-TIMESTAMP.json.
+cmd_perf_test() {
+  local n_rows="${1:-}"
+  if [ -z "$n_rows" ]; then
+    echo "Usage: ./run.sh perf-test <n_rows>" >&2
+    exit 1
+  fi
+
+  # Validate positive integer
+  if ! [[ "$n_rows" =~ ^[0-9]+$ ]] || [ "$n_rows" -eq 0 ]; then
+    echo "n_rows must be a positive integer" >&2
+    exit 1
+  fi
+
+  preflight
+
+  # Create results directory
+  mkdir -p results
+
+  # Generate temp CSV
+  local tmp_csv
+  tmp_csv="$(mktemp --suffix=.csv)"
+  trap "rm -f '$tmp_csv'" EXIT
+
+  run_step "generate test data ($n_rows rows)" python scripts/generate_test_data.py --rows "$n_rows" --output "$tmp_csv"
+
+  # Upload to S3 and capture key
+  local s3_key
+  s3_key="$(docker compose --profile tools run --rm tools python -c "
+import sys
+sys.path.insert(0, '/workspace')
+from tools.s3_upload import upload_file
+print(upload_file('$tmp_csv'))
+" 2>/dev/null)"
+
+  # Measure end-to-end timing
+  local start_time end_time elapsed
+  start_time="$(date +%s.%N)"
+  run_step "run csv_to_parquet job" docker compose --profile glue run --rm glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet --file-key "$s3_key"
+  end_time="$(date +%s.%N)"
+  elapsed="$(echo "$end_time - $start_time" | bc)"
+
+  # Calculate throughput
+  local throughput
+  throughput="$(echo "scale=2; $n_rows / $elapsed" | bc)"
+
+  # Write structured JSON result
+  local timestamp result_file
+  timestamp="$(date -u +"%Y%m%dT%H%M%SZ")"
+  result_file="results/perf-${timestamp}.json"
+
+  docker compose --profile tools run --rm tools python -c "
+import json
+import sys
+sys.path.insert(0, '/workspace')
+
+result = {
+    'test': 'csv_to_parquet_perf',
+    'rows_generated': $n_rows,
+    'elapsed_seconds': $elapsed,
+    'throughput_rows_per_sec': $throughput,
+    'timestamp': '$timestamp',
+    's3_key': '$s3_key'
+}
+
+with open('$result_file', 'w') as f:
+    json.dump(result, f, indent=2)
+
+print(json.dumps(result, indent=2))
+"
+
+  echo ""
+  echo "Performance test complete: $result_file"
+}
+
 main() {
   local cmd="${1:-}"
 
@@ -233,7 +310,7 @@ main() {
       usage >&2
       exit 2
       ;;
-    up|down|bootstrap|seed|upload|watch|job|test|lint|demo)
+    up|down|bootstrap|seed|upload|watch|job|test|lint|demo|perf-test)
       ;;
     *)
       echo "Unknown subcommand: ${cmd}" >&2
@@ -242,7 +319,7 @@ main() {
       ;;
   esac
 
-  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ]; then
+  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ]; then
     echo "Unexpected extra argument: ${2}" >&2
     exit 2
   fi
@@ -258,6 +335,7 @@ main() {
     test) cmd_test ;;
     lint) cmd_lint ;;
     demo) cmd_demo ;;
+    perf-test) cmd_perf_test "$2" ;;
   esac
 }
 
