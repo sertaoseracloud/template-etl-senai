@@ -87,45 +87,48 @@ def main() -> None:
     args = parser.parse_args()
 
     spark = SparkSession.builder.appName(args.JOB_NAME).getOrCreate()
-    spark, project_name_raw_bucket, project_name_curated_bucket = apply_s3a_config(spark)
-
-    glue_context = GlueContext(spark.sparkContext)
-    job = Job(glue_context)
-    # job.init expects a dict or a Java object, not argparse.Namespace.
-    # Convert Namespace to a plain dict so Glue's _get_object_id reflection works.
-    job.init(args.JOB_NAME, vars(args))
-
-    raw_path = f"s3a://{project_name_raw_bucket}/temperaturas/"
-    raw_df = read_csv(spark, raw_path)
-    rows_read = raw_df.count()
-
-    df = add_city_key(raw_df)
-    df = derive_temp_media(df)
-
-    if df.count() == 0:
-        sys.exit("Job output is empty. Aborting -- check input data at: " + raw_path)
-
-    curated_path = f"s3a://{project_name_curated_bucket}/temperaturas/"
-    write_parquet(df, curated_path, partition_cols=["data_medicao", "cidade_key"])
-
-    job.commit()
-
-    output_rows = 0
     try:
-        written_df = spark.read.parquet(curated_path)
-        output_rows = written_df.count()
-    except Exception:
-        pass
+        spark, project_name_raw_bucket, project_name_curated_bucket = apply_s3a_config(spark)
 
-    print("=" * 43)
-    print("ETL Job Complete: csv_to_parquet")
-    print("=" * 43)
-    print(f"Rows read   : {rows_read}")
-    print(f"Rows written: {output_rows}")
-    print("Partitions  : 18 (data_medicao x cidade_key)")
-    print(f"Input path  : s3a://{project_name_raw_bucket}/temperaturas/")
-    print(f"Output path : s3a://{project_name_curated_bucket}/temperaturas/")
-    print("=" * 43)
+        glue_context = GlueContext(spark.sparkContext)
+        job = Job(glue_context)
+        # job.init expects a dict or a Java object, not argparse.Namespace.
+        # Convert Namespace to a plain dict so Glue's _get_object_id reflection works.
+        job.init(args.JOB_NAME, vars(args))
+
+        raw_path = f"s3a://{project_name_raw_bucket}/temperaturas/"
+        raw_df = read_csv(spark, raw_path)
+        rows_read = raw_df.count()
+
+        df = add_city_key(raw_df)
+        df = derive_temp_media(df)
+
+        if df.count() == 0:
+            sys.exit("Job output is empty. Aborting -- check input data at: " + raw_path)
+
+        curated_path = f"s3a://{project_name_curated_bucket}/temperaturas/"
+        write_parquet(df, curated_path, partition_cols=["data_medicao", "cidade_key"])
+
+        job.commit()
+
+        output_rows = 0
+        try:
+            written_df = spark.read.parquet(curated_path)
+            output_rows = written_df.count()
+        except Exception:
+            pass
+
+        print("=" * 43)
+        print("ETL Job Complete: csv_to_parquet")
+        print("=" * 43)
+        print(f"Rows read   : {rows_read}")
+        print(f"Rows written: {output_rows}")
+        print("Partitions  : 18 (data_medicao x cidade_key)")
+        print(f"Input path  : s3a://{project_name_raw_bucket}/temperaturas/")
+        print(f"Output path : s3a://{project_name_curated_bucket}/temperaturas/")
+        print("=" * 43)
+    finally:
+        spark.stop()
 
 
 if __name__ == "__main__":
