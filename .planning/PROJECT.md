@@ -10,6 +10,15 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 ## Requirements
 
+## Current Milestone: v1.1 Event-Driven ETL & Performance Testing
+
+**Goal:** Enable event-driven ETL with S3-triggered Glue jobs and add dynamic performance test data generation, validated locally in Docker.
+
+**Target features:**
+1. **S3 Event Trigger** — Add files to S3 bucket, EventBridge observes and triggers Glue job with file parameter
+2. **Local Validation** — Flow must work and be validated locally in Docker (Floci + Glue container)
+3. **Dynamic Test Data Generator** — Generate test files with configurable row counts for performance testing
+
 ### Validated
 
 - ✓ **ENV-01 through ENV-07** — v1.0 (Phase 1)
