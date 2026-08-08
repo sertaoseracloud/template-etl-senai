@@ -11,10 +11,14 @@ case "${OSTYPE:-}" in
     ;;
 esac
 
-# env_value NAME — read a value out of .env without sourcing it. Selects the
+# env_value NAME -- read a value out of .env without sourcing it. Selects the
 # last line matching ^NAME=, strips the key and the "=", and prints the
 # remainder. .env is never sourced: a config file should not be able to run
 # arbitrary shell.
+#
+# NOTE: This function cannot distinguish a missing variable from one that is
+# set to an empty value (both return ""). Callers must handle both cases
+# explicitly (e.g., with `-z` tests in shell) if the distinction matters.
 env_value() {
   local name="$1"
   local line=""
