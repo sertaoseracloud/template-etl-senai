@@ -137,8 +137,11 @@ def athena_query(sql: str) -> list[dict[str, str]]:
     result_key = "athena-results/"
     try:
         s3.head_object(Bucket=curated_bucket(), Key=result_key)
-    except client.exceptions.ClientError:
-        s3.put_object(Bucket=curated_bucket(), Key=result_key, Body=b"")
+    except s3.exceptions.ClientError as exc:
+        if exc.response["Error"]["Code"] == "404":
+            s3.put_object(Bucket=curated_bucket(), Key=result_key, Body=b"")
+        else:
+            raise  # re-raise permission errors, network errors, etc.
     response = client.start_query_execution(
         QueryString=sql,
         QueryExecutionContext={"Database": database_name()},
@@ -180,6 +183,10 @@ def clean_curated() -> None:
     This is the D-04 state preparation -- run before any integration test
     so the output is deterministic regardless of prior job runs.
     """
+    # Module-scoped: runs once before the first integration test.
+    # After clean_curated clears the prefix, each test calls run_job_subprocess
+    # which appends to the curated bucket. State is intentionally cumulative
+    # within the module -- assertions use >= or run fresh within each test.
     clear_curated_prefix()
 
 
