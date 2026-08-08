@@ -40,7 +40,9 @@
 9. Terraform Input Transformer passes S3 key as job parameter
 10. `terraform fmt -check` and `validate` pass offline
 
-**Plans**: TBD
+**Plans**: 2 plans ✅
+- [x] 05-01-PLAN.md — S3 Trigger Simulation: job --file-key, run.sh upload/watch, local flow validation
+- [x] 05-02-PLAN.md — Terraform EventBridge: eventbridge module, IAM role, Input Transformer
 
 **UI hint**: no
 
@@ -75,7 +77,7 @@
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 5. Event Trigger & Local Simulation | 0/N | Not started | - |
+| 5. Event Trigger & Local Simulation | 0/2 | Not started | - |
 | 6. Performance Testing | 0/N | Not started | - |
 
 ---
