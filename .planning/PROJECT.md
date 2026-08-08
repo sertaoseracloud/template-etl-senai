@@ -12,20 +12,18 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ **ENV-01 through ENV-07** — v1.0 (Phase 1)
+- ✓ **RUN-01 through RUN-04** — v1.0 (Phase 1-2)
+- ✓ **CAT-01 through CAT-04** — v1.0 (Phase 1)
+- ✓ **JOB-01 through JOB-05** — v1.0 (Phase 2)
+- ✓ **TEST-01 through TEST-05** — v1.0 (Phase 2)
+- ✓ **IAC-01 through IAC-04** — v1.0 (Phase 3)
+- ✓ **CI-01 through CI-03** — v1.0 (Phase 3)
+- ✓ **DOC-01 through DOC-06** — v1.0 (Phase 4)
 
 ### Active
 
-- [ ] Ambiente Docker baseado na imagem oficial do AWS Glue 5.0 (`public.ecr.aws/glue/aws-glue-libs:5` — Spark 3.5, Python 3.11)
-- [ ] Emulação local de S3, Glue Data Catalog e Athena via Floci, sem token e sem custo
-- [ ] Job PySpark de exemplo mínimo: lê CSV, escreve Parquet
-- [ ] Script boto3 de bootstrap que registra databases, tables e partitions no Data Catalog
-- [ ] Entrypoint `./run.sh` com subcomandos (subir ambiente, rodar job, testes, lint, limpar)
-- [ ] Suíte pytest: testes unitários das transformações + teste de integração ponta a ponta contra o emulador
-- [ ] Pipeline GitHub Actions que builda a imagem, roda lint e executa os testes contra o emulador em cada PR
-- [ ] Módulo Terraform que provisiona Glue Job, IAM role, buckets S3 e Data Catalog numa conta AWS real
-- [ ] Configuração de endpoint/credenciais exclusivamente por variável de ambiente, para que trocar de emulador não exija refatoração
-- [ ] README de onboarding adequado a um repositório público (setup, arquitetura, como adaptar)
+_(None — v1.0 complete)_
 
 ### Out of Scope
 
@@ -38,6 +36,8 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 - **AWS CDK e SAM/CloudFormation** — Terraform é o padrão de mercado em data engineering e é agnóstico de provedor de estado.
 
 ## Context
+
+**Shipped v1.0 MVP** (2026-08-08): 4 phases, 9 plans, 38 requirements, 57 files changed, 4593 insertions.
 
 **Ecossistema e decisões técnicas apuradas durante o questionamento:**
 
@@ -63,15 +63,15 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Glue 5.0 em vez de 4.0 | Versão atual (Spark 3.5, Python 3.11); 4.0 é a última tag do Docker Hub, mas está defasada | — Pending |
-| Floci em vez de LocalStack | LocalStack Community descontinuado em mar/2026 e Glue Catalog é Pro; Floci é MIT, sem token, e cobre Catalog + Schema Registry + Athena | — Pending |
-| Job roda no container `aws-glue-libs`, não no emulador | Floci não emula StartJobRun — e executar Spark no container oficial é mais fiel ao runtime real de qualquer forma | — Pending |
-| Bootstrap do Catalog via script boto3 | Substitui o crawler ausente; é determinístico, versionado e serve como fonte única de schema que o Terraform também consome | — Pending |
-| Exemplo mínimo CSV → Parquet | O produto é o scaffolding; exemplo elaborado encarece manutenção e atrapalha quem vai substituí-lo | — Pending |
-| Terraform em vez de CDK/SAM | Padrão de mercado em data engineering, agnóstico, estado explícito | — Pending |
-| `./run.sh` em vez de Makefile | Funciona igual em Git Bash (Windows) e Linux sem exigir `make` | — Pending |
-| GitHub template repository em vez de cookiecutter | Reuso sem introduzir ferramenta extra de scaffolding para manter | — Pending |
-| Endpoint AWS configurável só por env | Isola o risco de maturidade do Floci — trocar de emulador não deve custar refatoração | — Pending |
+| Glue 5.0 em vez de 4.0 | Versão atual (Spark 3.5, Python 3.11); 4.0 é a última tag do Docker Hub, mas está defasada | ✓ Implemented — Glue 5.0 with Python 3.11 |
+| Floci em vez de LocalStack | LocalStack Community descontinuado em mar/2026 e Glue Catalog é Pro; Floci é MIT, sem token, e cobre Catalog + Schema Registry + Athena | ✓ Implemented — Floci 1.5.11 |
+| Job roda no container `aws-glue-libs`, não no emulador | Floci não emula StartJobRun — e executar Spark no container oficial é mais fiel ao runtime real de qualquer forma | ✓ Implemented — `docker compose run --rm` ephemeral task |
+| Bootstrap do Catalog via script boto3 | Substitui o crawler ausente; é determinístico, versionado e serve como fonte única de schema que o Terraform também consome | ✓ Implemented — `catalog/bootstrap.py` + `catalog/schema/temperaturas.json` |
+| Exemplo mínimo CSV → Parquet | O produto é o scaffolding; exemplo elaborado encarece manutenção e atrapalha quem vai substituí-lo | ✓ Implemented — Simple CSV to Parquet transform |
+| Terraform em vez de CDK/SAM | Padrão de mercado em data engineering, agnóstico, estado explícito | ✓ Implemented — `terraform/` module with AWS provider ~> 6.0 |
+| `./run.sh` em vez de Makefile | Funciona igual em Git Bash (Windows) e Linux sem exigir `make` | ✓ Implemented — 8 subcommands with MSYS_NO_PATHCONV guard |
+| GitHub template repository em vez de cookiecutter | Reuso sem introduzir ferramenta extra de scaffolding para manter | ✓ Implemented — README, CONTRIBUTING, issue templates |
+| Endpoint AWS configurável só por env | Isola o risco de maturidade do Floci — trocar de emulador não deve custar refatoração | ✓ Implemented — All config via .env |
 
 ## Evolution
 
@@ -91,4 +91,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-06 after initialization*
+*Last updated: 2026-08-08 after v1.0 MVP milestone*
