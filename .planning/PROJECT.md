@@ -10,14 +10,18 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 ## Requirements
 
-## Current Milestone: v1.1 Event-Driven ETL & Performance Testing
+## Current Milestone: v1.1 (Complete)
 
 **Goal:** Enable event-driven ETL with S3-triggered Glue jobs and add dynamic performance test data generation, validated locally in Docker.
 
-**Target features:**
-1. **S3 Event Trigger** — Add files to S3 bucket, EventBridge observes and triggers Glue job with file parameter
-2. **Local Validation** — Flow must work and be validated locally in Docker (Floci + Glue container)
-3. **Dynamic Test Data Generator** — Generate test files with configurable row counts for performance testing
+**Achieved:**
+- `./run.sh upload <file>` — Upload to S3
+- `./run.sh watch` — Poll S3 and trigger job (local EventBridge simulation)
+- `./run.sh perf-test <N>` — End-to-end benchmark
+- `./run.sh benchmark` — Suite (1K, 10K, 100K rows)
+- `./run.sh validate-s3/spark/athena` — Multi-layer validation
+
+**Next:** Run `/gsd-new-milestone` to plan v1.2
 
 ### Validated
 
@@ -46,7 +50,15 @@ _(None — v1.0 complete)_
 
 ## Context
 
-**Shipped v1.0 MVP** (2026-08-08): 4 phases, 9 plans, 38 requirements, 57 files changed, 4593 insertions.
+**Shipped v1.0 MVP** (2026-08-08): 4 phases, 9 plans, 38 requirements.
+
+**Shipped v1.1 Event-Driven ETL & Performance Testing** (2026-08-08): 2 phases, 3 plans, 17 requirements.
+
+**New in v1.1:**
+- Floci S3 triggers (upload, watch)
+- EventBridge Terraform module
+- Performance testing infrastructure
+- Multi-layer validation (S3, PySpark, Athena)
 
 **Ecossistema e decisões técnicas apuradas durante o questionamento:**
 
