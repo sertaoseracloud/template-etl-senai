@@ -52,3 +52,15 @@ variable "script_path" {
   description = "Path to the Glue job script"
   type        = string
 }
+
+variable "default_file_key" {
+  description = "Default value for --file-key parameter (can be overridden by EventBridge)"
+  type        = string
+  default     = ""
+}
+
+variable "default_arguments" {
+  description = "Additional default arguments to pass to the Glue job"
+  type        = map(string)
+  default     = {}
+}

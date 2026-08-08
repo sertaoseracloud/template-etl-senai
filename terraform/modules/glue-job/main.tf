@@ -12,13 +12,14 @@ resource "aws_glue_job" "this" {
     script_location = "s3://${var.raw_bucket_name}/${var.script_path}"
   }
 
-  default_arguments = {
+  default_arguments = merge({
     "--raw_bucket"       = var.raw_bucket_name
     "--curated_bucket"   = var.curated_bucket_name
     "--schema_location"  = var.schema_location
     "--enable-metrics"   = "true"
     "--enable-continuous-logging" = "true"
-  }
+    "--file-key"         = var.default_file_key
+  }, var.default_arguments)
 
   execution_property {
     max_concurrent_runs = 1
