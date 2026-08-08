@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Ensure the project root is on the Python path.
@@ -84,19 +85,48 @@ def apply_s3a_config(spark: SparkSession) -> tuple[SparkSession, str, str]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--JOB_NAME", required=True)
+    parser.add_argument("--file-key", required=False, default=None)
     args = parser.parse_args()
+
+    # Env var fallback for FILE_KEY (EVT-01)
+    file_key = args.file_key if args.file_key else os.environ.get("FILE_KEY")
 
     spark = SparkSession.builder.appName(args.JOB_NAME).getOrCreate()
     try:
         spark, project_name_raw_bucket, project_name_curated_bucket = apply_s3a_config(spark)
 
         glue_context = GlueContext(spark.sparkContext)
+        logger = glue_context.get_logger()
+
+        # Determine the source path based on file_key parameter
+        if file_key:
+            raw_path = f"s3a://{project_name_raw_bucket}/{file_key}"
+            # Log CloudWatch-compatible trigger event (EVT-02)
+            iso_timestamp = datetime.now(timezone.utc).isoformat()
+            # Check if file exists in S3 (D-02: skip silently if not found)
+            try:
+                fs = spark.sparkContext._jvm.org.apache.hadoop.fs.FileSystem.get(
+                    spark.sparkContext._jvm.java.net.URI.create(raw_path),
+                    spark.sparkContext._jsc.hadoopConfiguration()
+                )
+                path = spark.sparkContext._jvm.org.apache.hadoop.fs.Path(raw_path)
+                if not fs.exists(path):
+                    logger.info(f"File {file_key} not found, skipping silently.")
+                    spark.stop()
+                    sys.exit(0)
+                file_status = fs.getFileStatus(path)
+                size_bytes = file_status.getLen()
+            except Exception:
+                size_bytes = 0
+            logger.info(f"TRIGGER_EVENT: {{'file_key': '{file_key}', 'size_bytes': {size_bytes}, 'timestamp': '{iso_timestamp}'}}")
+        else:
+            raw_path = f"s3a://{project_name_raw_bucket}/temperaturas/"
+
         job = Job(glue_context)
         # job.init expects a dict or a Java object, not argparse.Namespace.
         # Convert Namespace to a plain dict so Glue's _get_object_id reflection works.
         job.init(args.JOB_NAME, vars(args))
 
-        raw_path = f"s3a://{project_name_raw_bucket}/temperaturas/"
         raw_df = read_csv(spark, raw_path)
         rows_read = raw_df.count()
 
@@ -124,7 +154,7 @@ def main() -> None:
         print(f"Rows read   : {rows_read}")
         print(f"Rows written: {output_rows}")
         print("Partitions  : 18 (data_medicao x cidade_key)")
-        print(f"Input path  : s3a://{project_name_raw_bucket}/temperaturas/")
+        print(f"Input path  : {raw_path}")
         print(f"Output path : s3a://{project_name_curated_bucket}/temperaturas/")
         print("=" * 43)
     finally:

@@ -115,6 +115,8 @@ Usage: ./run.sh <subcommand>
   down       Stop the emulator and remove volumes
   bootstrap  Create or update the Glue database, table, and partitions in the catalog
   seed       Upload sample CSV data to the emulated S3 bucket
+  upload     Upload a local file to S3 (simulates S3 PUT event)
+  watch      Poll S3 and trigger the job for new files (simulates EventBridge)
   job        Run the csv_to_parquet Glue job
   test       Run the pytest suite inside the Glue container
   lint       Run ruff check and ruff format --check inside the tools container
@@ -151,6 +153,35 @@ cmd_bootstrap() {
 cmd_seed() {
   preflight
   run_step "seed sample data" docker compose --profile tools run --rm tools python catalog/seed.py
+}
+
+# cmd_upload — upload a local file to S3 (simulates S3 PUT event for event-driven ETL).
+cmd_upload() {
+  local file="${1:-}"
+  if [ -z "$file" ]; then
+    echo "Usage: ./run.sh upload <file>" >&2
+    exit 1
+  fi
+  preflight
+  require_file "$file" "File not found: $file"
+  run_step "upload $file" docker compose --profile tools run --rm tools python -c "
+import sys
+sys.path.insert(0, '/workspace')
+from tools.s3_upload import upload_file
+print(upload_file('$file'))
+"
+}
+
+# cmd_watch — poll S3 and trigger the job for new files (simulates EventBridge).
+cmd_watch() {
+  preflight
+  echo "Watching S3 for new files (poll interval: ${POLL_INTERVAL:-5}s)..."
+  docker compose --profile tools run --rm tools python -c "
+import sys
+sys.path.insert(0, '/workspace')
+from tools.s3_watch import watch_loop
+watch_loop()
+"
 }
 
 # cmd_job — run the csv_to_parquet Glue job (D-07). require_file runs before
@@ -202,7 +233,7 @@ main() {
       usage >&2
       exit 2
       ;;
-    up|down|bootstrap|seed|job|test|lint|demo)
+    up|down|bootstrap|seed|upload|watch|job|test|lint|demo)
       ;;
     *)
       echo "Unknown subcommand: ${cmd}" >&2
@@ -211,7 +242,7 @@ main() {
       ;;
   esac
 
-  if [ "$#" -gt 1 ]; then
+  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ]; then
     echo "Unexpected extra argument: ${2}" >&2
     exit 2
   fi
@@ -221,6 +252,8 @@ main() {
     down) cmd_down ;;
     bootstrap) cmd_bootstrap ;;
     seed) cmd_seed ;;
+    upload) cmd_upload "$2" ;;
+    watch) cmd_watch ;;
     job) cmd_job ;;
     test) cmd_test ;;
     lint) cmd_lint ;;
