@@ -1,18 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Event-Driven ETL & Performance Testing
-status: complete
-stopped_at: milestone complete (2026-08-08)
-last_updated: "2026-08-08T23:15:00.000Z"
-last_activity: 2026-08-08
-last_activity_desc: v1.1 milestone complete
+milestone: v1.2
+milestone_name: Hexagonal Architecture & Developer Experience
+current_phase: 0
+status: planning
+created: "2026-08-08T23:20:00.000Z"
+last_updated: "2026-08-08T23:20:00.000Z"
 progress:
   total_phases: 2
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
-  percent: 100
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -23,45 +22,30 @@ See: .planning/PROJECT.md
 
 **Core value:** Clonar e rodar um comando resulta em ambiente de pea, job executado e testes verdes — offline, sem credencial AWS, sem passo manual.
 
-**Current focus:** v1.1 complete - archived to milestones/v1.1-ROADMAP.md
+## v1.2 Goals
 
-## v1.1 Summary
+1. **Arquitetura Hexagonal Full** — Refatorar Glue Job para ports & adapters
+2. **Testes com Mocks** — Reescrever usando mocks de Spark
+3. **lint --fix** — Adicionar ao run.sh
 
-### Phase 5: Event Trigger & Local Simulation
-- `./run.sh upload <file>` - Upload to S3
-- `./run.sh watch` - Poll S3 and trigger job (local EventBridge simulation)
-- Terraform EventBridge module for real AWS deployment
+## Architecture Preview
 
-### Phase 6: Performance Testing
-- `scripts/generate_test_data.py` - Dynamic CSV generator
-- `./run.sh perf-test <N>` - End-to-end benchmark
-- `./run.sh benchmark` - Suite (1K, 10K, 100K)
-- `./run.sh validate-s3`, `./run.sh validate-spark` - Validation
-
-## Velocity
-
-| Milestone | Plans | Total Time | Avg/Plan |
-|-----------|-------|------------|----------|
-| v1.0 | 9 | ~70min | ~8min |
-| v1.1 | 3 | — | — |
+```
+jobs/
+├── domain/
+│   ├── entities.py          # CsvRecord, ParquetRecord, JobContext
+│   └── ports/
+│       ├── primary/         # JobPort (driving)
+│       └── secondary/       # S3Port, SparkPort (driven)
+├── application/
+│   └── use_cases.py        # ProcessCsvJob, ValidateData
+├── adapters/
+│   ├── primary/             # GlueJobAdapter
+│   └── secondary/          # S3Adapter, SparkAdapter, GlueCatalogAdapter
+└── infrastructure/
+    └── di.py               # DI container
+```
 
 ## Next Steps
 
-Run `/gsd-new-milestone` to start planning v1.2
-
-## Accumulated Context
-
-### Decisions
-
-- [v1.0]: Floci does NOT support Glue job triggers. Local validation uses polling simulation.
-- [v1.1]: S3/Spark validation implemented via PySpark in Glue container
-- [v1.1]: Athena DuckDB sidecar requires Linux/macOS; Windows uses PySpark validation
-
-### Validation Commands
-
-```bash
-./run.sh test              # Unit tests
-./run.sh benchmark         # Performance suite
-./run.sh validate-s3 <N>   # S3 validation
-./run.sh validate-spark     # PySpark validation
-```
+- `/gsd-plan-phase 1` — Start Phase 1: Hexagonal Architecture
