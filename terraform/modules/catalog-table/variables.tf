@@ -8,11 +8,6 @@ variable "database_description" {
   type        = string
 }
 
-variable "glue_version" {
-  description = "Glue version"
-  type        = string
-}
-
 variable "schema_path" {
   description = "Path to the schema JSON file"
   type        = string

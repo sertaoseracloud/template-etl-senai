@@ -35,11 +35,10 @@ module "iam-role" {
 module "catalog-table" {
   source = "./modules/catalog-table"
 
-  database_name       = local.database_name
+  database_name        = local.database_name
   database_description = "Temperature data for Santa Catarina cities"
-  glue_version        = var.glue_version
-  schema_path         = "${path.module}/../catalog/schema/temperaturas.json"
-  curated_bucket_name = local.curated_bucket_name
+  schema_path          = "${path.module}/../catalog/schema/temperaturas.json"
+  curated_bucket_name   = local.curated_bucket_name
 }
 
 module "glue-job" {
