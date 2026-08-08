@@ -149,4 +149,4 @@ def write_parquet(df: DataFrame, path: str, partition_cols: list[str]) -> None:
         supported; e.g. ``["data_medicao", "cidade_key"]`` produces one
         Parquet file per (date, city) pair.
     """
-    df.write.mode("append").partitionBy(*partition_cols).parquet(path)
+    df.write.mode("overwrite").partitionBy(*partition_cols).parquet(path)
