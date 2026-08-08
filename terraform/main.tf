@@ -56,3 +56,12 @@ module "glue-job" {
   schema_location              = "temperaturas/"
   script_path                  = "jobs/csv_to_parquet/job.py"
 }
+
+module "eventbridge" {
+  source = "./modules/eventbridge"
+
+  project_name    = var.project_name
+  raw_bucket_name = local.raw_bucket_name
+  glue_job_arn   = module.glue-job.job_arn
+  prefix         = "temperaturas/"
+}
