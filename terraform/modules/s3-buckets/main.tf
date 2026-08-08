@@ -2,8 +2,8 @@ resource "aws_s3_bucket" "raw" {
   bucket = var.raw_bucket_name
 
   tags = {
-    Environment = "production"
-    Project     = "template_etl"
+    Environment = var.environment
+    Project     = var.project_name
   }
 }
 
@@ -27,8 +27,8 @@ resource "aws_s3_bucket" "curated" {
   bucket = var.curated_bucket_name
 
   tags = {
-    Environment = "production"
-    Project     = "template_etl"
+    Environment = var.environment
+    Project     = var.project_name
   }
 }
 

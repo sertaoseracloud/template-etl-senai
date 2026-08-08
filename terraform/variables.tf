@@ -4,6 +4,12 @@ variable "project_name" {
   default     = "template_etl"
 }
 
+variable "environment" {
+  description = "Environment name for resource tagging (e.g., production, staging, dev)"
+  type        = string
+  default     = "production"
+}
+
 variable "aws_region" {
   description = "AWS region for resources"
   type        = string

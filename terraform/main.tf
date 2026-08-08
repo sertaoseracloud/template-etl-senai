@@ -20,6 +20,8 @@ module "s3-buckets" {
 
   raw_bucket_name    = local.raw_bucket_name
   curated_bucket_name = local.curated_bucket_name
+  environment        = var.environment
+  project_name       = var.project_name
 }
 
 module "iam-role" {
