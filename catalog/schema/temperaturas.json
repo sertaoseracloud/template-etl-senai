@@ -10,12 +10,28 @@
     { "name": "temp_media", "type": "double", "comment": "Average temperature, derived on write by the csv_to_parquet job (not present in the raw CSV input)" }
   ],
   "partition_keys": [
-    { "name": "data_medicao", "type": "string", "comment": "Measurement date, YYYY-MM-DD" }
+    { "name": "data_medicao", "type": "string", "comment": "Measurement date, YYYY-MM-DD" },
+    { "name": "cidade_key", "type": "string", "comment": "City key derived from cidade name (NFKD normalized, lowercased)" }
   ],
   "partitions": [
-    { "values": ["2026-01-15"] },
-    { "values": ["2026-01-16"] },
-    { "values": ["2026-01-17"] }
+    { "values": ["2026-01-15", "florianopolis"] },
+    { "values": ["2026-01-15", "joinville"] },
+    { "values": ["2026-01-15", "blumenau"] },
+    { "values": ["2026-01-15", "chapeco"] },
+    { "values": ["2026-01-15", "lages"] },
+    { "values": ["2026-01-15", "criciuma"] },
+    { "values": ["2026-01-16", "florianopolis"] },
+    { "values": ["2026-01-16", "joinville"] },
+    { "values": ["2026-01-16", "blumenau"] },
+    { "values": ["2026-01-16", "chapeco"] },
+    { "values": ["2026-01-16", "lages"] },
+    { "values": ["2026-01-16", "criciuma"] },
+    { "values": ["2026-01-17", "florianopolis"] },
+    { "values": ["2026-01-17", "joinville"] },
+    { "values": ["2026-01-17", "blumenau"] },
+    { "values": ["2026-01-17", "chapeco"] },
+    { "values": ["2026-01-17", "lages"] },
+    { "values": ["2026-01-17", "criciuma"] }
   ],
   "storage": {
     "format": "parquet",
