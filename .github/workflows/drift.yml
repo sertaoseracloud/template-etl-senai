@@ -1,0 +1,47 @@
+# CI-03: Detects when upstream images (Floci, Glue libs) or Python dependencies
+# break the template without any code change in this repository. Runs the full
+# demo loop twice weekly so breakage is caught proactively, not reactively on a PR.
+name: Drift Detection
+
+"on":
+  schedule:
+    - cron: '0 8 * * 1,4'  # Monday and Thursday at 08:00 UTC
+
+jobs:
+  demo:
+    name: Demo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Glue image caching (~4.77 GB) between runs (D-01)
+      - name: Cache Glue image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: false
+          push: false
+          tags: public.ecr.aws/glue/aws-glue-libs:5
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Small deps caching
+      - name: Cache Python tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.local/lib/python*/site-packages
+          key: ${{ runner.os }}-pytools-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pytools-
+
+      - name: Run demo
+        run: ./run.sh demo
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
