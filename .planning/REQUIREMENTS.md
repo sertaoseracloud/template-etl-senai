@@ -62,12 +62,12 @@
 
 ### Documentação
 
-- [ ] **DOC-01**: README com quick start, estrutura do repositório e seção "como adaptar ao seu projeto"
-- [ ] **DOC-02**: `docs/KNOWN_DIFFERENCES.md` documenta as divergências entre local e AWS real — IAM não aplicado, bookmarks inexistentes, sem crawlers nem `StartJobRun`, `from_catalog` indisponível, dialeto do Athena via DuckDB
-- [ ] **DOC-03**: LICENSE MIT
-- [ ] **DOC-04**: CONTRIBUTING.md e templates de issue
-- [ ] **DOC-05**: Passos de renomeação documentados — o que o adotante precisa trocar após usar o template, já que não há cookiecutter
-- [ ] **DOC-06**: Badge de status do CI no README
+- [x] **DOC-01**: README com quick start, estrutura do repositório e seção "como adaptar ao seu projeto"
+- [x] **DOC-02**: `docs/KNOWN_DIFFERENCES.md` documenta as divergências entre local e AWS real — IAM não aplicado, bookmarks inexistentes, sem crawlers nem `StartJobRun`, `from_catalog` indisponível, dialeto do Athena via DuckDB
+- [x] **DOC-03**: LICENSE MIT
+- [x] **DOC-04**: CONTRIBUTING.md e templates de issue
+- [x] **DOC-05**: Passos de renomeação documentados — o que o adotante precisa trocar após usar o template, já que não há cookiecutter
+- [x] **DOC-06**: Badge de status do CI no README
 
 ## v2 Requirements
 
@@ -136,12 +136,12 @@ Reconhecidos, mas fora do roadmap atual.
 | IAC-02 | Phase 3 | Pending |
 | IAC-03 | Phase 3 | Pending |
 | IAC-04 | Phase 3 | Pending |
-| DOC-01 | Phase 4 | Pending |
-| DOC-02 | Phase 4 | Pending |
-| DOC-03 | Phase 4 | Pending |
-| DOC-04 | Phase 4 | Pending |
-| DOC-05 | Phase 4 | Pending |
-| DOC-06 | Phase 4 | Pending |
+| DOC-01 | Phase 4 | Complete |
+| DOC-02 | Phase 4 | Complete |
+| DOC-03 | Phase 4 | Complete |
+| DOC-04 | Phase 4 | Complete |
+| DOC-05 | Phase 4 | Complete |
+| DOC-06 | Phase 4 | Complete |
 
 **Coverage:**
 

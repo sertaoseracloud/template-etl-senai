@@ -38,7 +38,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Local Environment, Entrypoint & Catalog Bootstrap** - Clean clone to a healthy emulator and a populated Data Catalog with one command, no AWS credentials
 - [x] **Phase 2: ETL Job & Green Test Suite** - The core value: one documented command takes a clean clone all the way to green, offline
 - [ ] **Phase 3: Terraform Module & Continuous Integration** - The proven loop codified for real AWS and re-proven on every PR and on a schedule
-- [ ] **Phase 4: Public Documentation & Template Launch** - A stranger can adopt it, adapt it, and knows exactly what local green does not prove
+- [x] **Phase 4: Public Documentation & Template Launch** - A stranger can adopt it, adapt it, and knows exactly what local green does not prove (completed 2026-08-08)
 
 ## Phase Details
 
@@ -138,7 +138,7 @@ Plans:
 
 Plans:
 
-- [ ] 04-01: README (quick start, structure, architecture, "how to adapt", rename checklist, badge), `docs/KNOWN_DIFFERENCES.md`, LICENSE, CONTRIBUTING.md, issue templates
+- [x] 04-01: README (quick start, structure, architecture, "how to adapt", rename checklist, badge), `docs/KNOWN_DIFFERENCES.md`, LICENSE, CONTRIBUTING.md, issue templates
 
 **Open questions to settle during planning**:
 
@@ -161,7 +161,7 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 | 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | Complete | 2026-08-07 |
 | 2. ETL Job & Green Test Suite | 2/3 | In Progress | — |
 | 3. Terraform Module & Continuous Integration | 0/2 | Planned | — |
-| 4. Public Documentation & Template Launch | 0/1 | Not started | — |
+| 4. Public Documentation & Template Launch | 1/1 | Complete    | 2026-08-08 |
 
 ---
 *Roadmap created: 2026-08-06*
