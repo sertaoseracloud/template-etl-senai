@@ -71,6 +71,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       # Glue image caching (~4.77 GB) between runs (D-01)
+      # Note: Using floating tag :5. Consider pinning to a specific digest for production
+      # reproducibility, e.g., public.ecr.aws/glue/aws-glue-libs:5@sha256:<digest>
       - name: Cache Glue image
         uses: docker/build-push-action@v6
         with:
