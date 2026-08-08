@@ -1,7 +1,7 @@
-cidade,data_medicao,temp_min,temp_max
-Florianópolis,2026-01-17,23.0,30.8
-Joinville,2026-01-17,22.5,31.5
-Blumenau,2026-01-17,22.5,32.5
-Chapecó,2026-01-17,21.5,33.5
-Lages,2026-01-17,16.5,26.0
-Criciúma,2026-01-17,22.0,29.5
+cidade,cidade_key,data_medicao,temp_min,temp_max
+Florianópolis,florianopolis,2026-01-17,23.0,30.8
+Joinville,joinville,2026-01-17,22.5,31.5
+Blumenau,blumenau,2026-01-17,22.5,32.5
+Chapecó,chapeco,2026-01-17,21.5,33.5
+Lages,lages,2026-01-17,16.5,26.0
+Criciúma,criciuma,2026-01-17,22.0,29.5
