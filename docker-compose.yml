@@ -7,6 +7,12 @@ services:
       FLOCI_HOSTNAME: floci
       FLOCI_PORT: 4566
       FLOCI_STORAGE_MODE: memory
+    volumes:
+      - //./pipe/docker_engine:/var/run/docker.sock
+    cap_add:
+      - NET_RAW
+      - NET_BIND_SERVICE
+    privileged: true
 
   tools:
     build:
