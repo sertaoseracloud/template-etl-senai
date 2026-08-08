@@ -1,0 +1,34 @@
+name: Bug Report
+description: Report something that is not working as expected
+labels: ["bug"]
+body:
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What went wrong
+      description: A clear and concise description of the problem.
+      placeholder: Describe what happened and what you expected to happen instead.
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Docker version, and Floci version (from docker-compose.yml image tag).
+      placeholder: "OS: Windows 11 / Docker: 4.x / Floci: 1.5.11"
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps that reproduce the issue.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true

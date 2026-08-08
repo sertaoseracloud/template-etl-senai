@@ -1,0 +1,24 @@
+name: Feature Request
+description: Suggest an improvement or a new capability
+labels: ["enhancement"]
+body:
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What to add or change
+      description: A clear and concise description of the feature or change.
+      placeholder: Describe the feature and the problem it solves.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: belongs_in_template
+    attributes:
+      label: Does this belong in the template?
+      description: "Is this an improvement to the scaffolding, or does it belong in your own project?"
+      options:
+        - "Yes — it improves the scaffold for all adopters"
+        - "No — it belongs in my project or a fork"
+    validations:
+      required: true
