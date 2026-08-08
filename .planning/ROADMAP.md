@@ -108,12 +108,12 @@ Plans:
   4. Opening a pull request runs lint, the Terraform checks, and the full suite against Floci and reports green, with the workflow invoking `./run.sh` subcommands rather than restating compose and pytest steps.
   5. A scheduled workflow runs the same full loop on a cron with no repository change, so an upstream image or dependency breaking the template fails visibly in the Actions tab instead of in an adopter's first clone.
 
-**Plans**: 2 plans (indicative)
+**Plans**: 2/2 plans created
 
 Plans:
 
-- [ ] 03-01: `terraform/` module — Glue Job, IAM least-privilege role, S3 buckets, Catalog resources fed by the Phase 1 schema source of truth
-- [ ] 03-02: `.github/workflows/ci.yml` (PR: lint + terraform checks + full `run.sh` loop) and the scheduled drift-detection workflow
+- [P] 03-01-PLAN.md — terraform/ module: Glue Job, IAM least-privilege role, S3 buckets, Catalog resources fed by temperatures.json + schema update
+- [P] 03-02-PLAN.md — .github/workflows/ci.yml (PR: lint + terraform checks + run.sh loop) and scheduled drift-detection workflow
 
 **Open questions to settle during planning**:
 
@@ -160,7 +160,7 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 |-------|----------------|--------|-----------|
 | 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | Complete | 2026-08-07 |
 | 2. ETL Job & Green Test Suite | 2/3 | In Progress | — |
-| 3. Terraform Module & Continuous Integration | 0/2 | Not started | — |
+| 3. Terraform Module & Continuous Integration | 0/2 | Planned | — |
 | 4. Public Documentation & Template Launch | 0/1 | Not started | — |
 
 ---

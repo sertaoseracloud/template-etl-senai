@@ -1,0 +1,40 @@
+{
+  "phase": "03",
+  "phase_name": "Terraform Module & Continuous Integration",
+  "areas_completed": 5,
+  "areas_total": 5,
+  "decisions": [
+    {
+      "area": "CI cache",
+      "options_presented": ["Cache completo", "Sem cache da Glue image", "Cache só tooling small"],
+      "selected": "Cache completo",
+      "notes": "docker/build-push-action + type=gha; medir tempo real antes de optimizar"
+    },
+    {
+      "area": "Terraform structure",
+      "options_presented": ["Sub-módulos por recurso", "Root module único", "Main.tf monolithic"],
+      "selected": "Sub-módulos por recurso",
+      "notes": "Módulos: glue-job, iam-role, s3-buckets, catalog-table"
+    },
+    {
+      "area": "Terraform variables",
+      "options_presented": ["Todas as variáveis relevantes", "Mínimo possível", "Nenhum default"],
+      "selected": "Todas as variáveis relevantes",
+      "notes": "PROJECT_NAME, region, glue_version, etc. com defaults seguros"
+    },
+    {
+      "area": "CI job parallelism",
+      "options_presented": ["Sequencial", "Paralelo total", "Híbrido"],
+      "selected": "Sequencial",
+      "notes": "lint → terraform → test; falha rápida, diagnóstico claro"
+    },
+    {
+      "area": "Terraform + Catalog",
+      "options_presented": ["Terraform NÃO regista catálogo", "Terraform TAMBÉM regista catálogo"],
+      "selected": "Terraform TAMBÉM regista catálogo",
+      "notes": "Terraform usa jsondecode(file()) do temperaturas.json para aws_glue_catalog_table + CreatePartition em loop. Schema.json update: partition_keys ganha cidade_key; partitions expande para 18 entries (3 datas × 6 cidades)"
+    }
+  ],
+  "deferred": [],
+  "last_updated": "2026-08-09T00:00:00Z"
+}
