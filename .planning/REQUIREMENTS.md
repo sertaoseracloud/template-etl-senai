@@ -49,16 +49,16 @@
 
 ### CI
 
-- [ ] **CI-01**: GitHub Actions roda lint e a suíte completa contra o Floci em todo pull request
-- [ ] **CI-02**: O workflow invoca subcomandos do `run.sh` em vez de duplicar passos de compose e pytest
-- [ ] **CI-03**: Um workflow agendado detecta apodrecimento do template (dependências ou imagens que quebraram sem mudança no repositório)
+- [x] **CI-01**: GitHub Actions roda lint e a suíte completa contra o Floci em todo pull request
+- [x] **CI-02**: O workflow invoca subcomandos do `run.sh` em vez de duplicar passos de compose e pytest
+- [x] **CI-03**: Um workflow agendado detecta apodrecimento do template (dependências ou imagens que quebraram sem mudança no repositório)
 
 ### Infraestrutura como código
 
-- [ ] **IAC-01**: Terraform provisiona o Glue Job, a IAM role, os buckets S3 e o database/tabela no Data Catalog
-- [ ] **IAC-02**: Provider `hashicorp/aws` fixado em `~> 6.0` — versões abaixo de 5.92.0 rejeitam `python_version = "3.11"` com `glue_version = "5.0"`
-- [ ] **IAC-03**: A policy IAM é de menor privilégio
-- [ ] **IAC-04**: `terraform fmt -check` e `terraform validate` rodam no CI
+- [x] **IAC-01**: Terraform provisiona o Glue Job, a IAM role, os buckets S3 e o database/tabela no Data Catalog
+- [x] **IAC-02**: Provider `hashicorp/aws` fixado em `~> 6.0` — versões abaixo de 5.92.0 rejeitam `python_version = "3.11"` com `glue_version = "5.0"`
+- [x] **IAC-03**: A policy IAM é de menor privilégio
+- [x] **IAC-04**: `terraform fmt -check` e `terraform validate` rodam no CI
 
 ### Documentação
 
@@ -129,13 +129,13 @@ Reconhecidos, mas fora do roadmap atual.
 | TEST-03 | Phase 2 | Pending |
 | TEST-04 | Phase 2 | Pending |
 | TEST-05 | Phase 2 | Pending |
-| CI-01 | Phase 3 | Pending |
-| CI-02 | Phase 3 | Pending |
-| CI-03 | Phase 3 | Pending |
-| IAC-01 | Phase 3 | Pending |
-| IAC-02 | Phase 3 | Pending |
-| IAC-03 | Phase 3 | Pending |
-| IAC-04 | Phase 3 | Pending |
+| CI-01 | Phase 3 | Complete |
+| CI-02 | Phase 3 | Complete |
+| CI-03 | Phase 3 | Complete |
+| IAC-01 | Phase 3 | Complete |
+| IAC-02 | Phase 3 | Complete |
+| IAC-03 | Phase 3 | Complete |
+| IAC-04 | Phase 3 | Complete |
 | DOC-01 | Phase 4 | Complete |
 | DOC-02 | Phase 4 | Complete |
 | DOC-03 | Phase 4 | Complete |

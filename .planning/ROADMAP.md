@@ -37,7 +37,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Local Environment, Entrypoint & Catalog Bootstrap** - Clean clone to a healthy emulator and a populated Data Catalog with one command, no AWS credentials
 - [x] **Phase 2: ETL Job & Green Test Suite** - The core value: one documented command takes a clean clone all the way to green, offline
-- [ ] **Phase 3: Terraform Module & Continuous Integration** - The proven loop codified for real AWS and re-proven on every PR and on a schedule
+- [x] **Phase 3: Terraform Module & Continuous Integration** - The proven loop codified for real AWS and re-proven on every PR and on a schedule (completed 2026-08-08)
 - [x] **Phase 4: Public Documentation & Template Launch** - A stranger can adopt it, adapt it, and knows exactly what local green does not prove (completed 2026-08-08)
 
 ## Phase Details
@@ -160,7 +160,7 @@ Core value is delivered at the end of Phase 2. Phases 3 and 4 reproduce and expl
 |-------|----------------|--------|-----------|
 | 1. Local Environment, Entrypoint & Catalog Bootstrap | 3/3 | Complete | 2026-08-07 |
 | 2. ETL Job & Green Test Suite | 2/3 | In Progress | — |
-| 3. Terraform Module & Continuous Integration | 0/2 | Planned | — |
+| 3. Terraform Module & Continuous Integration | 2/2 | Complete    | 2026-08-08 |
 | 4. Public Documentation & Template Launch | 1/1 | Complete    | 2026-08-08 |
 
 ---
