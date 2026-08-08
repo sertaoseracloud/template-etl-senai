@@ -263,21 +263,19 @@ print(upload_file('$tmp_csv'))
   start_time="$(date +%s.%N)"
   run_step "run csv_to_parquet job" docker compose --profile glue run --rm glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet --file-key "$s3_key"
   end_time="$(date +%s.%N)"
-  elapsed="$(echo "$end_time - $start_time" | bc)"
+  elapsed="$(awk "BEGIN {printf \"%.3f\", $end_time - $start_time}")"
 
   # Calculate throughput
   local throughput
-  throughput="$(echo "scale=2; $n_rows / $elapsed" | bc)"
+  throughput="$(awk "BEGIN {printf \"%.2f\", $n_rows / $elapsed}")"
 
-  # Write structured JSON result
+  # Write structured JSON result to host filesystem
   local timestamp result_file
   timestamp="$(date -u +"%Y%m%dT%H%M%SZ")"
   result_file="results/perf-${timestamp}.json"
 
-  docker compose --profile tools run --rm tools python -c "
+  python -c "
 import json
-import sys
-sys.path.insert(0, '/workspace')
 
 result = {
     'test': 'csv_to_parquet_perf',

@@ -64,9 +64,11 @@ def generate_row(cidade: str, data_medicao: str) -> dict:
     cidade_key = normalize_key(cidade)
     temp_min = round(random.uniform(10.0, 25.0), 1)
     temp_max = round(random.uniform(20.0, 35.0), 1)
-    # Ensure temp_max >= temp_min
+    # Ensure temp_max >= temp_min, capped at 35.0
     if temp_max < temp_min:
         temp_max = round(temp_min + random.uniform(0.0, 10.0), 1)
+        if temp_max > 35.0:
+            temp_max = 35.0
     return {
         "cidade": cidade,
         "cidade_key": cidade_key,
@@ -120,8 +122,18 @@ def main() -> None:
         default="2026-01-15",
         help="Measurement date in YYYY-MM-DD format (default: 2026-01-15).",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="Random seed for reproducibility (optional).",
+    )
 
     args = parser.parse_args()
+
+    # Set random seed if provided for reproducibility
+    if args.seed is not None:
+        random.seed(args.seed)
 
     # Validate rows (mitigates T-06-02: DoS via huge row count)
     if args.rows <= 0:
