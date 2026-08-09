@@ -1,4 +1,5 @@
 """ETL job entry point: csv_to_parquet (hexagonal architecture)."""
+
 from __future__ import annotations
 
 import argparse
@@ -30,7 +31,9 @@ def main() -> None:
         request = JobRequest(
             job_name=args.JOB_NAME,
             file_key=args.file_key or os.environ.get("FILE_KEY"),
-            raw_bucket=raw, curated_bucket=curated)
+            raw_bucket=raw,
+            curated_bucket=curated,
+        )
         result = adapter.run(request)
         Job(GlueContext(spark.sparkContext)).init(args.JOB_NAME, vars(args))
         if result.status.value == "completed":
@@ -41,6 +44,7 @@ def main() -> None:
         Job(GlueContext(spark.sparkContext)).commit()
     finally:
         spark.stop()
+
 
 if __name__ == "__main__":
     main()

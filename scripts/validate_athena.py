@@ -47,9 +47,8 @@ def wait_for_query(athena, query_execution_id: str, max_wait: int = 60) -> dict:
         if status == "SUCCEEDED":
             return response
         elif status in ("FAILED", "CANCELLED"):
-            raise RuntimeError(
-                f"Query {status}: {response['QueryExecution']['Status'].get('StateChangeReason', '')}"
-            )
+            reason = response["QueryExecution"]["Status"].get("StateChangeReason", "")
+            raise RuntimeError(f"Query {status}: {reason}")
 
         time.sleep(0.5)
 
@@ -85,10 +84,14 @@ def run_athena_query(query: str, max_wait: int = 60) -> list[dict]:
     # Parse results
     rows = []
     for row in result["ResultSet"]["Rows"][1:]:  # Skip header
-        rows.append({col["Name"]: val["VarCharValue"] for col, val in zip(
-            result["ResultSet"]["ResultSetMetadata"]["ColumnInfo"],
-            row["Data"]
-        )})
+        rows.append(
+            {
+                col["Name"]: val["VarCharValue"]
+                for col, val in zip(
+                    result["ResultSet"]["ResultSetMetadata"]["ColumnInfo"], row["Data"]
+                )
+            }
+        )
 
     return rows
 
@@ -121,10 +124,12 @@ def validate_with_athena() -> dict:
                 tables = glue.get_tables(DatabaseName=db_name)
                 for table in tables["TableList"]:
                     print(f"    ✓ Table: {table['Name']}")
-                    results["glue_tables"].append({
-                        "name": table["Name"],
-                        "location": table["StorageDescriptor"]["Location"],
-                    })
+                    results["glue_tables"].append(
+                        {
+                            "name": table["Name"],
+                            "location": table["StorageDescriptor"]["Location"],
+                        }
+                    )
 
         # Run Athena queries on temperaturas table
         print("\n  Running Athena queries...")
@@ -134,10 +139,12 @@ def validate_with_athena() -> dict:
         rows1 = run_athena_query(query1)
         total = int(rows1[0]["total_rows"]) if rows1 else 0
         print(f"    ✓ Total rows in temperaturas: {total:,}")
-        results["athena_queries"].append({
-            "query": query1,
-            "result": total,
-        })
+        results["athena_queries"].append(
+            {
+                "query": query1,
+                "result": total,
+            }
+        )
 
         # Query 2: Count by city
         query2 = """
@@ -150,10 +157,12 @@ def validate_with_athena() -> dict:
         print("    ✓ Rows by city:")
         for row in rows2:
             print(f"      - {row['cidade_key']}: {row['count']} rows")
-        results["athena_queries"].append({
-            "query": "GROUP BY cidade_key",
-            "result": {r["cidade_key"]: int(r["count"]) for r in rows2},
-        })
+        results["athena_queries"].append(
+            {
+                "query": "GROUP BY cidade_key",
+                "result": {r["cidade_key"]: int(r["count"]) for r in rows2},
+            }
+        )
 
         # Query 3: Temperature statistics
         query3 = """
@@ -179,7 +188,8 @@ def validate_with_athena() -> dict:
         rows4 = run_athena_query(query4)
         print("    ✓ Sample data (5 rows):")
         for row in rows4:
-            print(f"      {row['cidade_key']}: {row['temp_min']}-{row['temp_max']}°C on {row['data_medicao']}")
+            data = row["data_medicao"]
+            print(f"      {row['cidade_key']}: {row['temp_min']}-{row['temp_max']}°C on {data}")
         results["athena_queries"].append({"query": "sample", "result": len(rows4)})
 
     except Exception as e:

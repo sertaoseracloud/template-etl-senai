@@ -47,9 +47,7 @@ class DIContainer:
             self._instances[interface] = self._factories[interface]()
         return self._instances[interface]
 
-    def get_glue_adapter(
-        self, spark: SparkSession, logger: object
-    ) -> GlueAdapter:
+    def get_glue_adapter(self, spark: SparkSession, logger: object) -> GlueAdapter:
         """Get GlueAdapter instance.
 
         Args:

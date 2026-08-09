@@ -245,7 +245,7 @@ def save_report(report: BenchmarkReport, output_path: str | None = None) -> None
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(output, "w", encoding="utf-8") as f:
+    with output.open("w", encoding="utf-8") as f:
         json.dump(report.to_dict(), f, indent=2)
 
     print(f"Report saved: {output}")
@@ -254,9 +254,7 @@ def save_report(report: BenchmarkReport, output_path: str | None = None) -> None
 def main() -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Run automated ETL performance benchmarks."
-    )
+    parser = argparse.ArgumentParser(description="Run automated ETL performance benchmarks.")
     parser.add_argument(
         "--configs",
         type=str,
@@ -280,7 +278,7 @@ def main() -> int:
     if args.configs:
         try:
             rows_list = [int(x.strip()) for x in args.configs.split(",")]
-            configs = [(f"{x//1000}K" if x >= 1000 else str(x), x) for x in rows_list]
+            configs = [(f"{x // 1000}K" if x >= 1000 else str(x), x) for x in rows_list]
         except ValueError as e:
             print(f"Error parsing --configs: {e}")
             return 1

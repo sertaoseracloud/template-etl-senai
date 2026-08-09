@@ -76,9 +76,7 @@ class TestPollAndTrigger(unittest.TestCase):
     @patch("tools.s3_watch.save_processed_file")
     @patch("tools.s3_watch.load_processed_files")
     @patch("tools.s3_watch.config")
-    def test_filters_already_processed_files(
-        self, mock_config, mock_load, mock_save, mock_trigger
-    ):
+    def test_filters_already_processed_files(self, mock_config, mock_load, mock_save, mock_trigger):
         """Test that poll_and_trigger() filters already-processed files."""
         from tools.s3_watch import poll_and_trigger
 
@@ -110,9 +108,7 @@ class TestPollAndTrigger(unittest.TestCase):
     @patch("tools.s3_watch.save_processed_file")
     @patch("tools.s3_watch.load_processed_files")
     @patch("tools.s3_watch.config")
-    def test_skips_directory_objects(
-        self, mock_config, mock_load, mock_save, mock_trigger
-    ):
+    def test_skips_directory_objects(self, mock_config, mock_load, mock_save, mock_trigger):
         """Test that poll_and_trigger() skips directory objects (ending with /)."""
         from tools.s3_watch import poll_and_trigger
 
@@ -153,10 +149,19 @@ class TestTriggerJob(unittest.TestCase):
 
         # Verify correct command construction
         expected_cmd = [
-            "docker", "compose", "--profile", "glue", "run", "--rm", "glue",
-            "spark-submit", "jobs/csv_to_parquet/job.py",
-            "--JOB_NAME", "csv_to_parquet",
-            "--file-key", "temperaturas/test.csv"
+            "docker",
+            "compose",
+            "--profile",
+            "glue",
+            "run",
+            "--rm",
+            "glue",
+            "spark-submit",
+            "jobs/csv_to_parquet/job.py",
+            "--JOB_NAME",
+            "csv_to_parquet",
+            "--file-key",
+            "temperaturas/test.csv",
         ]
         mock_run.assert_called_once()
         actual_cmd = mock_run.call_args[0][0]

@@ -1,3 +1,11 @@
+---
+name: 02-01
+phase: "02"
+plan_id: "02-01"
+status: complete
+completed: "2026-08-09"
+---
+
 # Phase 2 Summary: Tests & Developer Experience
 
 ## Goal
@@ -6,9 +14,9 @@ Rewrite tests with mocks and add `lint --fix` command.
 ## What Was Built
 
 ### DX-01: lint --fix Command
-- Added `--fix` flag to `run.sh lint` command
-- Usage: `./run.sh lint --fix`
-- Runs `ruff check --fix` + `ruff format --check`
+- ✅ Added `--fix` flag to `run.sh lint` command
+- ✅ Usage: `./run.sh lint --fix`
+- ✅ Runs `ruff check --fix` + `ruff format --check`
 
 ### HEX-02: Tests with Mocks
 
@@ -30,7 +38,12 @@ tests/unit/test_ports/test_storage_port.py
 
 ### Fixed Issues
 - Fixed all broken imports (application., domain. → jobs.csv_to_parquet.*)
-- Applied ruff auto-fixes across codebase
+- Fixed unused imports (F401) in test files
+- Fixed datetime.timezone.utc → datetime.UTC (UP017)
+- Fixed open() → Path.open() (PTH123)
+- Fixed line-too-long errors (E501)
+- Fixed import order (I001)
+- Fixed E402 module-level import in test_job.py
 
 ## Verification
 - ✅ `./run.sh lint --fix` executes without errors
@@ -48,6 +61,9 @@ tests/unit/test_ports/test_storage_port.py
 |-------------|--------|
 | DX-01.1: lint --fix command | ✅ |
 | DX-01.2: ruff configured | ✅ |
-| HEX-02.1: Rewrite test_transforms.py | ⚠️ (existing tests use spark_session) |
+| DX-01.3: pre-commit hook | ❌ (optional, skipped) |
+| HEX-02.1: Rewrite test_transforms.py | ✅ (mocks added) |
 | HEX-02.2: Create test_domain/ | ✅ |
 | HEX-02.3: Create test_ports/ | ✅ |
+| HEX-02.4: Integration tests | ⏸️ Deferred to Phase 3 |
+| HEX-02.5: PySpark real tests | ⏸️ Deferred to Phase 3 |

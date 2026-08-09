@@ -64,9 +64,7 @@ class DIContainer:
         transformer = container.get(SparkAdapter)
         return ProcessCsvUseCase(storage, transformer)
 
-    def get_glue_adapter(
-        self, spark: SparkSession, logger: object
-    ) -> GlueAdapter:
+    def get_glue_adapter(self, spark: SparkSession, logger: object) -> GlueAdapter:
         """Get GlueAdapter instance.
 
         Args:

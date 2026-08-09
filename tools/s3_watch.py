@@ -31,8 +31,7 @@ def load_processed_files() -> set[str]:
     """
     if not Path(PROCESSED_FILE).exists():
         return set()
-    with open(PROCESSED_FILE) as f:
-        return {line.strip() for line in f if line.strip()}
+    return {line.strip() for line in Path(PROCESSED_FILE).open() if line.strip()}
 
 
 def save_processed_file(key: str) -> None:
@@ -41,7 +40,7 @@ def save_processed_file(key: str) -> None:
     Args:
         key: The S3 key of the file that was processed.
     """
-    with open(PROCESSED_FILE, "a") as f:
+    with Path(PROCESSED_FILE).open("a") as f:
         f.write(f"{key}\n")
 
 
@@ -88,10 +87,19 @@ def trigger_job(file_key: str) -> None:
         Uses list-based subprocess args to avoid command injection (T-05-03).
     """
     cmd = [
-        "docker", "compose", "--profile", "glue", "run", "--rm", "glue",
-        "spark-submit", "jobs/csv_to_parquet/job.py",
-        "--JOB_NAME", "csv_to_parquet",
-        "--file-key", file_key
+        "docker",
+        "compose",
+        "--profile",
+        "glue",
+        "run",
+        "--rm",
+        "glue",
+        "spark-submit",
+        "jobs/csv_to_parquet/job.py",
+        "--JOB_NAME",
+        "csv_to_parquet",
+        "--file-key",
+        file_key,
     ]
     print(f"Triggering job: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)

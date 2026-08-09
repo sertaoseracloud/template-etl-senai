@@ -94,7 +94,7 @@ class TestGenerateCSV(unittest.TestCase):
         try:
             generate_csv(output_path, rows=50)
 
-            with open(output_path, newline="", encoding="utf-8") as f:
+            with Path(output_path).open(newline="", encoding="utf-8") as f:
                 reader = csv.DictReader(f)
                 rows = list(reader)
 
@@ -121,7 +121,7 @@ class TestGenerateCSV(unittest.TestCase):
         try:
             generate_csv(output_path, rows=5, data_medicao="2026-06-15")
 
-            with open(output_path, newline="", encoding="utf-8") as csvfile:
+            with Path(output_path).open(newline="", encoding="utf-8") as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     # Verify date is in YYYY-MM-DD format
@@ -146,8 +146,10 @@ class TestCLIArgs(unittest.TestCase):
                 [
                     sys.executable,
                     "scripts/generate_test_data.py",
-                    "--rows", "10",
-                    "--output", output_path,
+                    "--rows",
+                    "10",
+                    "--output",
+                    output_path,
                 ],
                 capture_output=True,
                 text=True,
@@ -166,8 +168,10 @@ class TestCLIArgs(unittest.TestCase):
             [
                 sys.executable,
                 "scripts/generate_test_data.py",
-                "--rows", "0",
-                "--output", "/tmp/test.csv",
+                "--rows",
+                "0",
+                "--output",
+                "/tmp/test.csv",
             ],
             capture_output=True,
             text=True,
@@ -183,9 +187,12 @@ class TestCLIArgs(unittest.TestCase):
             [
                 sys.executable,
                 "scripts/generate_test_data.py",
-                "--rows", "10",
-                "--output", "/tmp/test.csv",
-                "--date", "invalid-date",
+                "--rows",
+                "10",
+                "--output",
+                "/tmp/test.csv",
+                "--date",
+                "invalid-date",
             ],
             capture_output=True,
             text=True,

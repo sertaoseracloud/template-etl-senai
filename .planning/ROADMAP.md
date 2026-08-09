@@ -42,8 +42,8 @@
 
 | Phase | Plans | Status | Completed |
 |-------|-------|--------|-----------|
-| 1. Hexagonal Architecture | TBD | Complete    | 2026-08-08 |
-| 2. Tests & DX | TBD | Pending | — |
+| 1. Hexagonal Architecture | 1 | Complete | 2026-08-08 |
+| 2. Tests & DX | 1 | Complete | 2026-08-09 |
 
 ---
 

@@ -24,17 +24,17 @@ from typing import Any
 import boto3
 import pytest
 
-# Mark all tests in this module as requiring the Floci Athena endpoint.
-# Default pytest run (./run.sh test) skips these via: pytest -m "not athena"
-# To run with Athena: pytest --override-ini="markers=" or remove the marker filter.
-pytestmark = pytest.mark.athena
-
-from catalog.config import (
+from catalog.config import (  # noqa: E402  # boto3 available in Glue container
     curated_bucket,
     database_name,
     endpoint_url,
     s3_client,
 )
+
+# Mark all tests in this module as requiring the Floci Athena endpoint.
+# Default pytest run (./run.sh test) skips these via: pytest -m "not athena"
+# To run with Athena: pytest --override-ini="markers=" or remove the marker filter.
+pytestmark = pytest.mark.athena
 
 
 # SQL Portable Subset (D-03):

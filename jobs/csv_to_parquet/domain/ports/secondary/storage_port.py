@@ -30,9 +30,7 @@ class StoragePort(ABC):
         ...
 
     @abstractmethod
-    def write_parquet(
-        self, data: list[dict], path: str, partition_cols: list[str]
-    ) -> None:
+    def write_parquet(self, data: list[dict], path: str, partition_cols: list[str]) -> None:
         """Write data to Parquet format at the given path.
 
         Args:

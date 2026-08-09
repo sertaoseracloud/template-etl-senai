@@ -89,7 +89,7 @@ def generate_csv(output_path: str, rows: int, data_medicao: str = "2026-01-15") 
     output = Path(output_path)
     output.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(output, "w", newline="", encoding="utf-8") as f:
+    with output.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
             f,
             fieldnames=["cidade", "cidade_key", "data_medicao", "temp_min", "temp_max"],

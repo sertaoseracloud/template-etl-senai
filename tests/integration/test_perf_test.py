@@ -94,7 +94,10 @@ def test_result_json_schema() -> None:
 def test_normalize_key_consistency() -> None:
     """Verify cidade_key generation is consistent with transforms."""
     result = subprocess.run(
-        ["python", "-c", """
+        [
+            "python",
+            "-c",
+            """
 import sys
 sys.path.insert(0, 'scripts')
 from generate_test_data import normalize_key
@@ -107,7 +110,8 @@ assert normalize_key('Chapeco') == 'chapeco', 'Chapeco failed'
 assert normalize_key('Lages') == 'lages', 'Lages failed'
 assert normalize_key('Criciuma') == 'criciuma', 'Criciuma failed'
 print('All city keys normalized correctly')
-"""],
+""",
+        ],
         capture_output=True,
         text=True,
         cwd=Path(__file__).parent.parent.parent,

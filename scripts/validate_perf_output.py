@@ -130,9 +130,7 @@ def run_validation(n_rows: int) -> bool:
 def main() -> int:
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Validate ETL performance test output against S3."
-    )
+    parser = argparse.ArgumentParser(description="Validate ETL performance test output against S3.")
     parser.add_argument(
         "--rows",
         type=int,
@@ -151,6 +149,7 @@ def main() -> int:
 
     if args.json:
         import json
+
         print(json.dumps(result, indent=2))
     else:
         success = run_validation(args.rows)

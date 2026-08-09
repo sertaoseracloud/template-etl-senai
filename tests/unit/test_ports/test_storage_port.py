@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from unittest.mock import MagicMock
-import pytest
 
 from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
 from jobs.csv_to_parquet.domain.ports.secondary.storage_port import StoragePort

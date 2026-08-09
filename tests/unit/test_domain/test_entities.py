@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from unittest.mock import MagicMock
-import pytest
+from datetime import UTC, datetime
 
 from jobs.csv_to_parquet.domain.entities import (
     CsvRecord,
@@ -76,8 +74,8 @@ class TestJobResult:
             rows_written=95,
             input_path="s3://bucket/input.csv",
             output_path="s3://bucket/output.parquet",
-            started_at=datetime(2026, 1, 15, 10, 0, 0, tzinfo=timezone.utc),
-            completed_at=datetime(2026, 1, 15, 10, 1, 0, tzinfo=timezone.utc),
+            started_at=datetime(2026, 1, 15, 10, 0, 0, tzinfo=UTC),
+            completed_at=datetime(2026, 1, 15, 10, 1, 0, tzinfo=UTC),
         )
         data = result.to_dict()
         assert data["status"] == "completed"
