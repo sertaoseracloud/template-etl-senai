@@ -15,6 +15,7 @@
 **Requirements:** HEX-01.1 - HEX-01.11
 
 **Success Criteria:**
+
 1. Domain layer isolado (sem Spark/Glue imports)
 2. Ports definidos como ABC/Protocol
 3. Adapters implementam ports
@@ -29,6 +30,7 @@
 **Requirements:** HEX-02.1 - HEX-02.5, DX-01.1 - DX-01.3
 
 **Success Criteria:**
+
 1. Testes com mocks de Spark DataFrame
 2. Domain e ports testados isoladamente
 3. `./run.sh lint --fix` funciona
@@ -40,7 +42,7 @@
 
 | Phase | Plans | Status | Completed |
 |-------|-------|--------|-----------|
-| 1. Hexagonal Architecture | TBD | Pending | — |
+| 1. Hexagonal Architecture | TBD | Complete    | 2026-08-08 |
 | 2. Tests & DX | TBD | Pending | — |
 
 ---

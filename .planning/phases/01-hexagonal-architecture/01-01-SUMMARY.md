@@ -45,6 +45,7 @@ jobs/csv_to_parquet/
 - ✅ Domain layer isolado (sem Spark imports)
 - ✅ Ports definidos como ABC com @abstractmethod
 - ✅ job.py usa DI container
+- ✅ job.py = 40 linhas (< 50 requirement)
 
 ## Issues Fixed
 - Missing `infrastructure/di.py` - criado com DI container
