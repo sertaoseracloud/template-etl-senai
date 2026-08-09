@@ -53,3 +53,10 @@ tests/
 1. Use `unittest.mock` for mocking (stdlib)
 2. Use ruff for linting (fast, modern)
 3. No pre-commit hook initially (optional DX-01.3)
+4. **Deferred to Phase 3**: HEX-02.4 (integration S3 fixture), HEX-02.5 (PySpark real tests)
+   - Require Floci container setup
+   - Complexity beyond phase scope
+
+## Deferred
+- HEX-02.4: Integration tests with S3 fixture → Phase 3
+- HEX-02.5: PySpark real tests → Phase 3
