@@ -11,10 +11,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyspark.sql import SparkSession
 
-from application.dto import JobRequest
-from application.use_cases import ProcessCsvUseCase
-from domain.entities import JobResult, JobStatus
-from domain.ports.primary.job_port import JobPort
+from jobs.csv_to_parquet.application.dto import JobRequest
+from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
+from jobs.csv_to_parquet.domain.entities import JobResult, JobStatus
+from jobs.csv_to_parquet.domain.ports.primary.job_port import JobPort
 
 
 class GlueAdapter(JobPort):

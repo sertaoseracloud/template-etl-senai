@@ -1,5 +1,5 @@
 """Primary adapters package."""
 
-from adapters.primary.glue_adapter import GlueAdapter
+from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
 
 __all__ = ["GlueAdapter"]

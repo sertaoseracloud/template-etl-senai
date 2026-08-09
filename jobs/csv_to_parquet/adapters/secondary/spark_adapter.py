@@ -10,9 +10,9 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pyspark.sql import SparkSession
 
-from domain.ports.secondary.storage_port import StoragePort
-from domain.ports.secondary.transform_port import TransformPort
-from domain.value_objects import FileInfo
+from jobs.csv_to_parquet.domain.ports.secondary.storage_port import StoragePort
+from jobs.csv_to_parquet.domain.ports.secondary.transform_port import TransformPort
+from jobs.csv_to_parquet.domain.value_objects import FileInfo
 
 
 class SparkAdapter(StoragePort, TransformPort):

@@ -10,11 +10,11 @@ Architecture:
 - services: Pure business logic
 """
 
-from domain.entities import CsvRecord, JobResult, JobStatus
-from domain.ports.primary.job_port import JobPort
-from domain.ports.secondary.storage_port import StoragePort
-from domain.ports.secondary.transform_port import TransformPort
-from domain.value_objects import CityKey, FileInfo, Temperature
+from jobs.csv_to_parquet.domain.entities import CsvRecord, JobResult, JobStatus
+from jobs.csv_to_parquet.domain.ports.primary.job_port import JobPort
+from jobs.csv_to_parquet.domain.ports.secondary.storage_port import StoragePort
+from jobs.csv_to_parquet.domain.ports.secondary.transform_port import TransformPort
+from jobs.csv_to_parquet.domain.value_objects import CityKey, FileInfo, Temperature
 
 __all__ = [
     # entities

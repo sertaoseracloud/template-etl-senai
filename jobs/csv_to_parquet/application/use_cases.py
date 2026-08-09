@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from domain.ports.secondary.storage_port import StoragePort
     from domain.ports.secondary.transform_port import TransformPort
 
-from application.dto import JobRequest, JobResponse
+from jobs.csv_to_parquet.application.dto import JobRequest, JobResponse
 
 
 class ProcessCsvUseCase:
