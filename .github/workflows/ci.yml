@@ -62,11 +62,7 @@ jobs:
       - name: Terraform validate
         run: terraform validate
 
-  # Legacy/placeholder job removed — it was partially implemented with no actual test steps.
-  # The actual integration testing is handled by the test-integration job below.
-  # TODO: Either remove this comment block or complete the implementation if needed.
-
-  # DX-03.1, DX-03.2: Unit tests (no Spark/AWS required)
+  # DX-03.1: Unit tests (no Spark/AWS required)
   test-unit:
     name: Test Unit
     runs-on: ubuntu-latest
@@ -97,11 +93,6 @@ jobs:
   test-integration:
     name: Test Integration
     runs-on: ubuntu-latest
-    services:
-      floci:
-        image: floci/floci:1.5.11
-        # Use host network so Glue container can reach Floci via localhost
-        options: --network host
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,8 +100,10 @@ jobs:
       - name: Setup .env
         run: |
           cp .env.example .env
-          # Use localhost for Floci since it's exposed as GitHub Actions service
           echo "AWS_ENDPOINT_URL=http://localhost:4566" >> .env
+
+      - name: Start Floci
+        run: docker run -d --name floci -p 4566:4566 floci/floci:1.5.11
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -167,8 +160,12 @@ jobs:
       - name: Run ETL job
         run: docker compose --profile glue run --rm glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet
         env:
-          AWS_ENDPOINT_URL: http://localhost:4566
+          AWS_ENDPOINT_URL: http://host.docker.internal:4566
           AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_DEFAULT_REGION: us-east-1
           PROJECT_NAME: template_etl
+
+      - name: Cleanup Floci
+        if: always()
+        run: docker rm -f floci || true
