@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import boto3
 import pytest
+from botocore.exceptions import ClientError
 
 from catalog.config import (  # noqa: E402  # boto3 available in Glue container
     curated_bucket,
@@ -30,15 +31,20 @@ def clear_curated_prefix() -> int:
     s3 = s3_client()
     bucket = curated_bucket()
     prefix = "temperaturas/"
-    paginator = s3.get_paginator("list_objects_v2")
-    pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
-    deleted_count = 0
-    for page in pages:
-        if "Contents" in page:
-            keys = [{"Key": obj["Key"]} for obj in page["Contents"]]
-            s3.delete_objects(Bucket=bucket, Delete={"Objects": keys})
-            deleted_count += len(keys)
-    return deleted_count
+    try:
+        paginator = s3.get_paginator("list_objects_v2")
+        pages = paginator.paginate(Bucket=bucket, Prefix=prefix)
+        deleted_count = 0
+        for page in pages:
+            if "Contents" in page:
+                keys = [{"Key": obj["Key"]} for obj in page["Contents"]]
+                s3.delete_objects(Bucket=bucket, Delete={"Objects": keys})
+                deleted_count += len(keys)
+        return deleted_count
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "NoSuchBucket":
+            return 0  # Bucket doesn't exist yet, nothing to clear
+        raise
 
 
 def upload_csv_to_s3(csv_content: str, key: str, bucket: str | None = None) -> None:
