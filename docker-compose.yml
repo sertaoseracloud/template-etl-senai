@@ -47,6 +47,8 @@ services:
   glue:
     image: public.ecr.aws/glue/aws-glue-libs:5
     profiles: ["glue"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     working_dir: /home/hadoop/workspace
     volumes:
       - .:/home/hadoop/workspace
