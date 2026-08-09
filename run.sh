@@ -94,11 +94,6 @@ preflight() {
     fi
   done
 
-  # Skip Floci running check if CI=true (GitHub Actions provides Floci as service)
-  if [ "${CI:-}" = "true" ]; then
-    return 0
-  fi
-
   local endpoint
   endpoint="$(env_value AWS_ENDPOINT_URL)"
   case "$endpoint" in
@@ -156,23 +151,13 @@ cmd_down() {
 # (D-05). Runs in the tools service, never the Glue image.
 cmd_bootstrap() {
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
-  run_step "bootstrap catalog" docker compose --profile tools run --rm $no_deps tools python catalog/bootstrap.py
+  run_step "bootstrap catalog" docker compose --profile tools run --rm tools python catalog/bootstrap.py
 }
 
 # cmd_seed — upload sample CSV data to the emulated S3 bucket.
 cmd_seed() {
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
-  run_step "seed sample data" docker compose --profile tools run --rm $no_deps tools python catalog/seed.py
+  run_step "seed sample data" docker compose --profile tools run --rm tools python catalog/seed.py
 }
 
 # cmd_upload — upload a local file to S3 (simulates S3 PUT event for event-driven ETL).
@@ -183,13 +168,8 @@ cmd_upload() {
     exit 1
   fi
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
   require_file "$file" "File not found: $file"
-  run_step "upload $file" docker compose --profile tools run --rm $no_deps tools python -c "
+  run_step "upload $file" docker compose --profile tools run --rm tools python -c "
 import sys
 sys.path.insert(0, '/workspace')
 from tools.s3_upload import upload_file
@@ -200,13 +180,8 @@ print(upload_file('$file'))
 # cmd_watch — poll S3 and trigger the job for new files (simulates EventBridge).
 cmd_watch() {
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
   echo "Watching S3 for new files (poll interval: ${POLL_INTERVAL:-5}s)..."
-  docker compose --profile tools run --rm $no_deps tools python -c "
+  docker compose --profile tools run --rm tools python -c "
 import sys
 sys.path.insert(0, '/workspace')
 from tools.s3_watch import watch_loop
@@ -387,12 +362,7 @@ cmd_validate_s3() {
     exit 1
   fi
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
-  run_step "validate S3 data ($n_rows rows)" docker compose --profile tools run --rm $no_deps tools python scripts/validate_perf_output.py --rows "$n_rows"
+  run_step "validate S3 data ($n_rows rows)" docker compose --profile tools run --rm tools python scripts/validate_perf_output.py --rows "$n_rows"
 }
 
 # cmd_validate_spark — validate processed Parquet data via PySpark.
@@ -407,12 +377,7 @@ cmd_validate_spark() {
 # For real Athena, use: docker compose --profile athena up -d
 cmd_validate_athena() {
   preflight
-  # In CI, use --no-deps since Floci is provided externally
-  local no_deps=""
-  if [ "${CI:-}" = "true" ]; then
-    no_deps="--no-deps"
-  fi
-  run_step "validate data via Athena" docker compose --profile tools run --rm $no_deps tools python scripts/validate_athena.py
+  run_step "validate data via Athena" docker compose --profile tools run --rm tools python scripts/validate_athena.py
 }
 
 main "$@"
