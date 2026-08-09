@@ -22,32 +22,7 @@ from pyspark.sql import SparkSession
 
 from jobs.csv_to_parquet.application.dto import JobRequest
 from jobs.csv_to_parquet.infrastructure.di import get_container
-
-
-def apply_s3a_config(spark: SparkSession) -> tuple[str, str]:
-    """Apply S3A configuration and return bucket names.
-
-    Bucket derivation matches catalog/config.py:
-    - raw_bucket = f"{project_name.replace('_', '-')}-raw"
-    - curated_bucket = f"{project_name.replace('_', '-')}-curated"
-    """
-    project_name = os.environ["PROJECT_NAME"]
-    raw_bucket = f"{project_name.replace('_', '-')}-raw"
-    curated_bucket = f"{project_name.replace('_', '-')}-curated"
-
-    hconf = spark.sparkContext._jsc.hadoopConfiguration()
-    hconf.set("fs.s3a.endpoint", os.environ["AWS_ENDPOINT_URL"])
-    hconf.set("fs.s3a.path.style.access", "true")
-    hconf.set("fs.s3a.connection.ssl.enabled", "false")
-    hconf.set(
-        "fs.s3a.aws.credentials.provider",
-        "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",
-    )
-    hconf.set("fs.s3a.access.key", os.environ["AWS_ACCESS_KEY_ID"])
-    hconf.set("fs.s3a.secret.key", os.environ["AWS_SECRET_ACCESS_KEY"])
-    hconf.set("fs.s3a.endpoint.region", os.environ["AWS_DEFAULT_REGION"])
-
-    return raw_bucket, curated_bucket
+from jobs.csv_to_parquet.infrastructure.config import apply_s3a_config, get_bucket_names
 
 
 def main() -> None:
@@ -60,7 +35,8 @@ def main() -> None:
 
     spark = SparkSession.builder.appName(args.JOB_NAME).getOrCreate()
     try:
-        raw_bucket, curated_bucket = apply_s3a_config(spark)
+        apply_s3a_config(spark)
+        raw_bucket, curated_bucket = get_bucket_names()
 
         glue_context = GlueContext(spark.sparkContext)
         logger = glue_context.get_logger()
