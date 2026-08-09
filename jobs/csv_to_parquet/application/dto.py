@@ -19,6 +19,9 @@ class JobRequest:
         """Validate request."""
         if not self.job_name:
             raise ValueError("job_name is required")
+        # Validate partition columns are non-empty list
+        if not self.partition_cols:
+            raise ValueError("partition_cols cannot be empty")
 
 
 @dataclass
