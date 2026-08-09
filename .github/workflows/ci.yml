@@ -50,16 +50,19 @@ jobs:
           terraform_version: 1.9
 
       - name: Terraform init
-        run: terraform init -backend=false -chdir=infra
+        run: terraform init -backend=false
+        working-directory: ${{ github.workspace }}/infra
         env:
           AWS_ACCESS_KEY_ID: ""
           AWS_SECRET_ACCESS_KEY: ""
 
       - name: Terraform fmt check
-        run: terraform fmt -check -recursive -chdir=infra
+        run: terraform fmt -check -recursive
+        working-directory: ${{ github.workspace }}/infra
 
       - name: Terraform validate
-        run: terraform validate -chdir=infra
+        run: terraform validate
+        working-directory: ${{ github.workspace }}/infra
 
   # DX-03.1: Unit tests (no Spark/AWS required)
   test-unit:
