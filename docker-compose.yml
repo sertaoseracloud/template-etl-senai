@@ -47,9 +47,6 @@ services:
   glue:
     image: public.ecr.aws/glue/aws-glue-libs:5
     profiles: ["glue"]
-    depends_on:
-      floci:
-        condition: service_healthy
     working_dir: /home/hadoop/workspace
     volumes:
       - .:/home/hadoop/workspace
