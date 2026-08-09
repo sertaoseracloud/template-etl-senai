@@ -58,7 +58,8 @@ class ProcessCsvUseCase:
             # Write Parquet
             # Distinguish event-driven output path from batch processing
             if request.file_key:
-                output_path = f"s3://{request.curated_bucket}/temperaturas/{request.file_key.rsplit('.', 1)[0]}/"
+                file_prefix = request.file_key.rsplit(".", 1)[0]
+                output_path = f"s3://{request.curated_bucket}/temperaturas/{file_prefix}/"
             else:
                 output_path = f"s3://{request.curated_bucket}/temperaturas/"
             self._storage.write_parquet(data, output_path, request.partition_cols)

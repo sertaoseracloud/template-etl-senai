@@ -61,6 +61,7 @@ class SparkAdapter(StoragePort, TransformPort):
                 )
         except Exception as e:
             import logging
+
             logging.warning(f"Failed to get file info for {path}: {e}")
             return None
         return None
