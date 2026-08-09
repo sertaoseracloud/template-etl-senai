@@ -10,6 +10,7 @@ the same pattern as test_job.py to ensure realistic execution context.
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -69,8 +70,12 @@ def spark_session():
 
 @pytest.fixture(scope="function")
 def clean_curated(clean_curated_prefix):
-    """Ensure curated bucket is clean before each test."""
-    pass  # clean_curated_prefix already handles this
+    """Ensure curated bucket is clean before each test.
+
+    Delegates to clean_curated_prefix which performs the actual cleanup.
+    """
+    # clean_curated_prefix handles pre-test cleanup
+    yield
 
 
 # ---------------------------------------------------------------------------
@@ -172,8 +177,6 @@ def test_glue_adapter_populates_rows_metrics(clean_curated: None) -> None:
     stdout = result["stdout"]
 
     # Parse rows read from output
-    import re
-
     rows_read_match = re.search(r"Rows read[:\s]+(\d+)", stdout, re.IGNORECASE)
     rows_written_match = re.search(r"Rows written[:\s]+(\d+)", stdout, re.IGNORECASE)
 
@@ -195,7 +198,10 @@ def test_glue_adapter_output_parquet_files_exist(clean_curated: None) -> None:
 
     # Verify parquet files exist
     parquet_count = count_parquet_files()
-    assert parquet_count >= 18, f"Expected at least 18 parquet files, got {parquet_count}"
+    # 3 dates x 6 cities = 18 partitions
+    assert parquet_count >= 18, (
+        f"Expected at least 18 parquet files (3 dates x 6 cities), got {parquet_count}"
+    )
 
 
 def test_glue_adapter_in_process(
@@ -245,9 +251,8 @@ def test_glue_adapter_in_process(
 
     # Verify parquet files exist in S3
     parquet_count = count_parquet_files()
-    assert parquet_count >= 18, (
-        f"Expected at least 18 parquet files after in-process run, got {parquet_count}"
-    )
+    # 3 dates x 6 cities = 18 partitions
+    assert parquet_count >= 18, f"Expected >=18 parquet files (3x6 partitions), got {parquet_count}"
 
 
 def test_glue_adapter_parquet_partition_structure(clean_curated: None) -> None:

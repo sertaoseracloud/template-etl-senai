@@ -50,12 +50,13 @@ class GlueAdapter(JobPort):
         result = self._use_case.execute(request)
 
         # Log CloudWatch-compatible event
+        # Note: JobResponse doesn't have file_size_bytes, use rows_read as proxy
         if self._logger:
             iso_timestamp = datetime.now(UTC).isoformat()
             self._logger.info(
                 f"TRIGGER_EVENT: {{"
                 f"'file_key': '{request.file_key or 'batch'}', "
-                f"'size_bytes': {result.file_size_bytes}, "
+                f"'rows_read': {result.rows_read}, "
                 f"'timestamp': '{iso_timestamp}'"
                 f"}}"
             )
