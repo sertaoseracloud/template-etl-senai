@@ -7,8 +7,8 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from domain.entities import JobResult
     from application.dto import JobRequest
+    from domain.entities import JobResult
 
 
 class JobPort(ABC):

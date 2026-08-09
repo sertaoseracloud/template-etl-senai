@@ -7,8 +7,7 @@ imported directly in unit tests.
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 
 class TestUploadFile(unittest.TestCase):

@@ -18,7 +18,7 @@ from domain.value_objects import FileInfo
 class SparkAdapter(StoragePort, TransformPort):
     """Adapter using PySpark for storage and transformation operations."""
 
-    def __init__(self, spark: "SparkSession") -> None:
+    def __init__(self, spark: SparkSession) -> None:
         """Initialize with SparkSession.
 
         Args:
@@ -35,7 +35,6 @@ class SparkAdapter(StoragePort, TransformPort):
 
     def write_parquet(self, data: list[dict], path: str, partition_cols: list[str]) -> None:
         """Write data to Parquet format."""
-        from pyspark.sql import SparkSession
 
         s3a_path = path.replace("s3://", "s3a://")
         df = self._spark.createDataFrame(data)

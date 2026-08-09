@@ -11,7 +11,7 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -33,7 +33,7 @@ class BenchmarkReport:
     """Aggregated benchmark report."""
 
     test: str = "csv_to_parquet_benchmark"
-    timestamp: str = field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    timestamp: str = field(default_factory=lambda: datetime.now(UTC).isoformat())
     results: list[BenchmarkResult] = field(default_factory=list)
 
     @property
@@ -136,7 +136,7 @@ def run_perf_test(n_rows: int) -> BenchmarkResult:
                 rows=n_rows,
                 elapsed_seconds=elapsed,
                 throughput_rows_per_sec=n_rows / elapsed if elapsed > 0 else 0,
-                timestamp=datetime.now(timezone.utc).isoformat(),
+                timestamp=datetime.now(UTC).isoformat(),
                 s3_key="",
                 success=True,
             )
@@ -239,7 +239,7 @@ def print_report(report: BenchmarkReport) -> None:
 def save_report(report: BenchmarkReport, output_path: str | None = None) -> None:
     """Save benchmark report to JSON file."""
     if output_path is None:
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         output_path = f"results/benchmark_{timestamp}.json"
 
     output = Path(output_path)

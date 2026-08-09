@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, TypeVar
 
 if TYPE_CHECKING:
+    from pyspark.sql import SparkSession
+
     from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
     from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
     from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
@@ -44,7 +46,7 @@ class DIContainer:
             self._instances[interface] = self._factories[interface](self)
         return self._instances[interface]
 
-    def create_spark_adapter(self, container: "DIContainer") -> "SparkAdapter":
+    def create_spark_adapter(self, container: DIContainer) -> SparkAdapter:
         """Factory for SparkAdapter."""
         from pyspark.sql import SparkSession
 
@@ -53,18 +55,18 @@ class DIContainer:
 
         return SparkAdapter(spark)
 
-    def create_use_case(self, container: "DIContainer") -> "ProcessCsvUseCase":
+    def create_use_case(self, container: DIContainer) -> ProcessCsvUseCase:
         """Factory for ProcessCsvUseCase."""
-        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
         from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
+        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 
         storage = container.get(SparkAdapter)
         transformer = container.get(SparkAdapter)
         return ProcessCsvUseCase(storage, transformer)
 
     def get_glue_adapter(
-        self, spark: "SparkSession", logger: object
-    ) -> "GlueAdapter":
+        self, spark: SparkSession, logger: object
+    ) -> GlueAdapter:
         """Get GlueAdapter instance.
 
         Args:
@@ -75,8 +77,8 @@ class DIContainer:
             Configured GlueAdapter.
         """
         from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
-        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
         from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
+        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 
         storage = SparkAdapter(spark)
         use_case = ProcessCsvUseCase(storage, storage)

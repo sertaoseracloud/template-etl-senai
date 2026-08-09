@@ -167,7 +167,7 @@ def validate_with_athena() -> dict:
         rows3 = run_athena_query(query3)
         if rows3:
             stats = rows3[0]
-            print(f"    ✓ Temperature stats:")
+            print("    ✓ Temperature stats:")
             print(f"      - Avg temp_min: {float(stats['avg_temp_min']):.1f}°C")
             print(f"      - Avg temp_max: {float(stats['avg_temp_max']):.1f}°C")
             print(f"      - Min temp_min: {float(stats['min_temp_min']):.1f}°C")
@@ -177,7 +177,7 @@ def validate_with_athena() -> dict:
         # Query 4: Sample data
         query4 = "SELECT * FROM temperaturas LIMIT 5"
         rows4 = run_athena_query(query4)
-        print(f"    ✓ Sample data (5 rows):")
+        print("    ✓ Sample data (5 rows):")
         for row in rows4:
             print(f"      {row['cidade_key']}: {row['temp_min']}-{row['temp_max']}°C on {row['data_medicao']}")
         results["athena_queries"].append({"query": "sample", "result": len(rows4)})

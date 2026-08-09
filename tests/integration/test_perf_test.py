@@ -8,10 +8,7 @@ Per D-08 invariant, tests must NOT import awsglue or boto3.
 
 from __future__ import annotations
 
-import json
-import os
 import subprocess
-import time
 from pathlib import Path
 
 
@@ -47,10 +44,10 @@ def test_perf_test_result_structure() -> None:
     results_dir.mkdir(exist_ok=True)
 
     # Count existing result files
-    existing_results = list(results_dir.glob("perf-*.json"))
+    list(results_dir.glob("perf-*.json"))
 
     # Run perf-test with small row count
-    result = subprocess.run(
+    subprocess.run(
         ["bash", "./run.sh", "perf-test", "10"],
         capture_output=True,
         text=True,

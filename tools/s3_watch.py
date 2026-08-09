@@ -31,7 +31,7 @@ def load_processed_files() -> set[str]:
     """
     if not Path(PROCESSED_FILE).exists():
         return set()
-    with open(PROCESSED_FILE, "r") as f:
+    with open(PROCESSED_FILE) as f:
         return {line.strip() for line in f if line.strip()}
 
 
@@ -98,7 +98,7 @@ def trigger_job(file_key: str) -> None:
     if result.returncode != 0:
         print(f"Job failed: {result.stderr}", file=sys.stderr)
     else:
-        print(f"Job completed successfully")
+        print("Job completed successfully")
 
 
 def watch_loop() -> None:

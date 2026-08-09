@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import os
 
+from pyspark.sql import SparkSession
+
 
 def get_bucket_names() -> tuple[str, str]:
     """Get S3 bucket names from environment variables.
@@ -24,7 +26,7 @@ def get_bucket_names() -> tuple[str, str]:
     return raw_bucket, curated_bucket
 
 
-def apply_s3a_config(spark: "SparkSession") -> None:
+def apply_s3a_config(spark: SparkSession) -> None:
     """Apply S3A configuration to Spark session.
 
     Args:

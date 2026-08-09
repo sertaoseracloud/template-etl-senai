@@ -208,11 +208,16 @@ cmd_test() {
 }
 
 # cmd_lint — ruff check, then ruff format --check, both against the tools
-# service. Must exit 0 on a clean clone (no Python files yet) and continue to
-# do so once plan 01-03 adds them.
+# service. With --fix flag: auto-fix issues.
+# Usage: ./run.sh lint [--fix]
 cmd_lint() {
   preflight
-  run_step "ruff check" docker compose --profile tools run --rm tools ruff check .
+  local fix_mode=""
+  if [ "$1" = "--fix" ]; then
+    fix_mode="--fix"
+    echo "Running ruff with auto-fix..."
+  fi
+  run_step "ruff check" docker compose --profile tools run --rm tools ruff check . $fix_mode
   run_step "ruff format --check" docker compose --profile tools run --rm tools ruff format --check .
 }
 
@@ -319,7 +324,7 @@ main() {
       ;;
   esac
 
-  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ] && [ "$cmd" != "benchmark" ] && [ "$cmd" != "validate-s3" ]; then
+  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ] && [ "$cmd" != "benchmark" ] && [ "$cmd" != "validate-s3" ] && [ "$cmd" != "lint" ]; then
     echo "Unexpected extra argument: ${2}" >&2
     exit 2
   fi
@@ -333,7 +338,8 @@ main() {
     watch) cmd_watch ;;
     job) cmd_job ;;
     test) cmd_test ;;
-    lint) cmd_lint ;;
+    lint) cmd_lint "${2:-}" ;;
+    lint-fix) cmd_lint --fix ;;
     demo) cmd_demo ;;
     perf-test) cmd_perf_test "$2" ;;
     benchmark) cmd_benchmark "${2:-}" ;;

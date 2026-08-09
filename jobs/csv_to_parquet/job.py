@@ -1,14 +1,20 @@
 """ETL job entry point: csv_to_parquet (hexagonal architecture)."""
 from __future__ import annotations
-import argparse, os, sys
+
+import argparse
+import os
+import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path.cwd()))
 from awsglue.context import GlueContext
 from awsglue.job import Job
 from pyspark.sql import SparkSession
+
 from jobs.csv_to_parquet.application.dto import JobRequest
 from jobs.csv_to_parquet.infrastructure.config import apply_s3a_config, get_bucket_names
 from jobs.csv_to_parquet.infrastructure.di import get_container
+
 
 def main() -> None:
     p = argparse.ArgumentParser()

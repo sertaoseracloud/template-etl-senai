@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional
 
 
 @dataclass
@@ -11,7 +10,7 @@ class JobRequest:
     """Request object for job execution."""
 
     job_name: str
-    file_key: Optional[str] = None
+    file_key: str | None = None
     raw_bucket: str = ""
     curated_bucket: str = ""
     partition_cols: list[str] = field(default_factory=lambda: ["data_medicao", "cidade_key"])
@@ -32,7 +31,7 @@ class JobResponse:
     input_path: str = ""
     output_path: str = ""
     message: str = ""
-    error: Optional[str] = None
+    error: str | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""

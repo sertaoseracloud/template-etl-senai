@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 
 class JobStatus(Enum):
@@ -26,8 +25,8 @@ class CsvRecord:
     data_medicao: str
     temp_min: float
     temp_max: float
-    cidade_key: Optional[str] = None
-    temp_media: Optional[float] = None
+    cidade_key: str | None = None
+    temp_media: float | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary."""
@@ -62,10 +61,10 @@ class JobResult:
     rows_written: int = 0
     input_path: str = ""
     output_path: str = ""
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    error_message: Optional[str] = None
-    file_key: Optional[str] = None
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
+    error_message: str | None = None
+    file_key: str | None = None
     file_size_bytes: int = 0
 
     def to_dict(self) -> dict:

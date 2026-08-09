@@ -53,7 +53,7 @@ def validate_with_spark() -> dict:
         df = spark.read.parquet(table_path)
 
         print(f"  ✓ Loaded {df.count()} total rows")
-        print(f"  ✓ Schema:")
+        print("  ✓ Schema:")
         df.printSchema()
 
         results["queries"].append({

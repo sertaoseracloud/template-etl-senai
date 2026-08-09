@@ -7,8 +7,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from domain.entities import JobResult, JobStatus
-
 if TYPE_CHECKING:
     from domain.ports.secondary.storage_port import StoragePort
     from domain.ports.secondary.transform_port import TransformPort
@@ -21,14 +19,14 @@ class ProcessCsvUseCase:
 
     def __init__(
         self,
-        storage: "StoragePort",
-        transformer: "TransformPort",
+        storage: StoragePort,
+        transformer: TransformPort,
     ) -> None:
         """Initialize with storage and transformer ports."""
         self._storage = storage
         self._transformer = transformer
 
-    def execute(self, request: "JobRequest") -> "JobResponse":
+    def execute(self, request: JobRequest) -> JobResponse:
         """Execute the CSV to Parquet process.
 
         Args:
@@ -84,7 +82,7 @@ class ProcessCsvUseCase:
             )
 
 
-def _empty_response(request: "JobRequest", message: str) -> "JobResponse":
+def _empty_response(request: JobRequest, message: str) -> JobResponse:
     """Create response for empty data case."""
     return JobResponse(
         success=True,

@@ -4,7 +4,7 @@ This port defines the interface for reading and writing data.
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from domain.value_objects import FileInfo

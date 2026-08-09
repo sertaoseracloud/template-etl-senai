@@ -5,7 +5,7 @@ This adapter wraps the Glue job entrypoint and orchestrates the use case.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -22,7 +22,7 @@ class GlueAdapter(JobPort):
 
     def __init__(
         self,
-        spark: "SparkSession",
+        spark: SparkSession,
         use_case: ProcessCsvUseCase,
         logger: object | None = None,
     ) -> None:
@@ -46,12 +46,12 @@ class GlueAdapter(JobPort):
         Returns:
             Job result with status and metrics.
         """
-        started_at = datetime.now(timezone.utc)
+        started_at = datetime.now(UTC)
         result = self._use_case.execute(request)
 
         # Log CloudWatch-compatible event
         if self._logger:
-            iso_timestamp = datetime.now(timezone.utc).isoformat()
+            iso_timestamp = datetime.now(UTC).isoformat()
             self._logger.info(
                 f"TRIGGER_EVENT: {{"
                 f"'file_key': '{request.file_key or 'batch'}', "
@@ -67,7 +67,7 @@ class GlueAdapter(JobPort):
             input_path=result.input_path,
             output_path=result.output_path,
             started_at=started_at,
-            completed_at=datetime.now(timezone.utc),
+            completed_at=datetime.now(UTC),
             error_message=result.error,
             file_key=request.file_key,
         )

@@ -11,8 +11,6 @@ if TYPE_CHECKING:
     from pyspark.sql import SparkSession
 
     from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
-    from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
-    from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 
 T = TypeVar("T")
 
@@ -50,8 +48,8 @@ class DIContainer:
         return self._instances[interface]
 
     def get_glue_adapter(
-        self, spark: "SparkSession", logger: object
-    ) -> "GlueAdapter":
+        self, spark: SparkSession, logger: object
+    ) -> GlueAdapter:
         """Get GlueAdapter instance.
 
         Args:
@@ -62,8 +60,8 @@ class DIContainer:
             Configured GlueAdapter.
         """
         from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
-        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
         from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
+        from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 
         storage = SparkAdapter(spark)
         transformer = SparkAdapter(spark)
