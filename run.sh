@@ -156,13 +156,15 @@ cmd_down() {
 # (D-05). Runs in the tools service, never the Glue image.
 cmd_bootstrap() {
   preflight
-  run_step "bootstrap catalog" docker compose --profile tools run --rm tools python catalog/bootstrap.py
+  local no_deps="${CI:+--no-deps}"
+  run_step "bootstrap catalog" docker compose --profile tools run --rm $no_deps tools python catalog/bootstrap.py
 }
 
 # cmd_seed — upload sample CSV data to the emulated S3 bucket.
 cmd_seed() {
   preflight
-  run_step "seed sample data" docker compose --profile tools run --rm tools python catalog/seed.py
+  local no_deps="${CI:+--no-deps}"
+  run_step "seed sample data" docker compose --profile tools run --rm $no_deps tools python catalog/seed.py
 }
 
 # cmd_upload — upload a local file to S3 (simulates S3 PUT event for event-driven ETL).
@@ -173,8 +175,9 @@ cmd_upload() {
     exit 1
   fi
   preflight
+  local no_deps="${CI:+--no-deps}"
   require_file "$file" "File not found: $file"
-  run_step "upload $file" docker compose --profile tools run --rm tools python -c "
+  run_step "upload $file" docker compose --profile tools run --rm $no_deps tools python -c "
 import sys
 sys.path.insert(0, '/workspace')
 from tools.s3_upload import upload_file
@@ -185,8 +188,9 @@ print(upload_file('$file'))
 # cmd_watch — poll S3 and trigger the job for new files (simulates EventBridge).
 cmd_watch() {
   preflight
+  local no_deps="${CI:+--no-deps}"
   echo "Watching S3 for new files (poll interval: ${POLL_INTERVAL:-5}s)..."
-  docker compose --profile tools run --rm tools python -c "
+  docker compose --profile tools run --rm $no_deps tools python -c "
 import sys
 sys.path.insert(0, '/workspace')
 from tools.s3_watch import watch_loop
@@ -367,7 +371,8 @@ cmd_validate_s3() {
     exit 1
   fi
   preflight
-  run_step "validate S3 data ($n_rows rows)" docker compose --profile tools run --rm tools python scripts/validate_perf_output.py --rows "$n_rows"
+  local no_deps="${CI:+--no-deps}"
+  run_step "validate S3 data ($n_rows rows)" docker compose --profile tools run --rm $no_deps tools python scripts/validate_perf_output.py --rows "$n_rows"
 }
 
 # cmd_validate_spark — validate processed Parquet data via PySpark.
@@ -382,7 +387,8 @@ cmd_validate_spark() {
 # For real Athena, use: docker compose --profile athena up -d
 cmd_validate_athena() {
   preflight
-  run_step "validate data via Athena" docker compose --profile tools run --rm tools python scripts/validate_athena.py
+  local no_deps="${CI:+--no-deps}"
+  run_step "validate data via Athena" docker compose --profile tools run --rm $no_deps tools python scripts/validate_athena.py
 }
 
 main "$@"
