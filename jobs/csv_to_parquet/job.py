@@ -34,8 +34,8 @@ def main() -> None:
             raw_bucket=raw,
             curated_bucket=curated,
         )
-        result = adapter.run(request)
         Job(GlueContext(spark.sparkContext)).init(args.JOB_NAME, vars(args))
+        result = adapter.run(request)
         if result.status.value == "completed":
             print(f"ETL Complete: {result.rows_read} read, {result.rows_written} written")
         else:
