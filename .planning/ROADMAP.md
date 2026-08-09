@@ -44,13 +44,16 @@
 |-------|-------|--------|-----------|
 | 1. Hexagonal Architecture | 1 | Complete | 2026-08-08 |
 | 2. Tests & DX | 1 | Complete | 2026-08-09 |
-| 3. Integration & Performance Tests | TBD | Pending | — |
+| 3. Integration & Performance Tests | 1 | Planned | — |
 
 ---
 
 ### Phase 3: Integration & Performance Tests
 
 **Goal:** Complete deferred integration tests and add performance testing.
+
+**Plans:**
+- [ ] 03-01-PLAN.md — Integration tests with S3 fixture and PySpark real tests
 
 **Requirements:** HEX-02.4, HEX-02.5, DX-01.3
 
@@ -59,6 +62,7 @@
 1. Integration tests with S3 fixture (Floci)
 2. PySpark real tests in Glue container
 3. Pre-commit hook configured (optional)
+4. CI/CD pipeline stub
 
 ---
 
