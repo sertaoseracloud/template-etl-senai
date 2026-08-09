@@ -2,68 +2,49 @@
 
 ## Milestones
 
-- ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-08-08)
-- ✅ **v1.1** — Event-Driven ETL & Performance Testing ([archived](milestones/v1.1-ROADMAP.md))
-- ✅ **v1.2** — Hexagonal Architecture & Developer Experience ([archived](milestones/v1.2-ROADMAP.md))
+- ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-08-08) ([archived](milestones/v1.0-ROADMAP.md))
+- ✅ **v1.1 Event-Driven ETL & Performance** — Phases 5-6 (shipped 2026-08-08) ([archived](milestones/v1.1-ROADMAP.md))
+- ✅ **v1.2 Hexagonal Architecture & DX** — Phases 1-3 (shipped 2026-08-09) ([archived](milestones/v1.2-ROADMAP.md))
 
-## v1.2 Phases
+## Phases
 
-### Phase 1: Hexagonal Architecture (HEX-01)
+<details>
+<summary>✅ v1.0 MVP (Phases 1-4) — SHIPPED 2026-08-08</summary>
 
-**Goal:** Refatorar Glue Job para arquitetura hexagonal com ports & adapters.
+Bootstrap do ambiente local, entrypoint `run.sh`, job ETL com transforms puras,
+suíte de testes, módulo Terraform, pipeline CI e documentação pública.
 
-**Requirements:** HEX-01.1 - HEX-01.11
+Detalhes: [v1.0-ROADMAP.md](milestones/v1.0-ROADMAP.md)
 
-**Success Criteria:**
+</details>
 
-1. Domain layer isolado (sem Spark/Glue imports)
-2. Ports definidos como ABC/Protocol
-3. Adapters implementam ports
-4. DI container conecta componentes
-5. job.py é thin entrypoint
-6. transform/ mantido como pure functions
+<details>
+<summary>✅ v1.1 Event-Driven ETL & Performance (Phases 5-6) — SHIPPED 2026-08-08</summary>
 
-### Phase 2: Tests & Developer Experience (HEX-02, DX-01)
+Trigger por evento com simulação local, provisionamento EventBridge via Terraform,
+gerador dinâmico de dados de teste e benchmarks de throughput.
 
-**Goal:** Reescrever testes com mocks e adicionar lint --fix.
+Detalhes: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md)
 
-**Requirements:** HEX-02.1 - HEX-02.5, DX-01.1 - DX-01.3
+</details>
 
-**Success Criteria:**
+<details>
+<summary>✅ v1.2 Hexagonal Architecture & DX (Phases 1-3) — SHIPPED 2026-08-09</summary>
 
-1. Testes com mocks de Spark DataFrame
-2. Domain e ports testados isoladamente
-3. `./run.sh lint --fix` funciona
-4. ruff auto-fix configurado
+- [x] Phase 1: Hexagonal Architecture (1/1 plan) — completed 2026-08-08
+- [x] Phase 2: Tests & Developer Experience (1/1 plan) — completed 2026-08-09
+- [x] Phase 3: Integration & Performance Tests (1/1 plan) — completed 2026-08-09
 
----
+Detalhes: [v1.2-ROADMAP.md](milestones/v1.2-ROADMAP.md)
 
-## Progress
-
-| Phase | Plans | Status | Completed |
-|-------|-------|--------|-----------|
-| 1. Hexagonal Architecture | 1 | Complete | 2026-08-08 |
-| 2. Tests & DX | 1 | Complete | 2026-08-09 |
-| 3. Integration & Performance Tests | 1 | Complete | 2026-08-09 |
+</details>
 
 ---
 
-### Phase 3: Integration & Performance Tests
+## Open Technical Debt
 
-**Goal:** Complete deferred integration tests and add performance testing.
-
-**Plans:**
-- [x] 03-01-PLAN.md — Integration tests with S3 fixture and PySpark real tests
-
-**Requirements:** HEX-02.4, HEX-02.5, DX-01.3
-
-**Success Criteria:**
-
-1. Integration tests with S3 fixture (Floci)
-2. PySpark real tests in Glue container
-3. Pre-commit hook configured (optional)
-4. CI/CD pipeline stub
+- **WR-03** — risco de OOM em `collect()`; exige mudança arquitetural (aberto desde v1.2 Phase 1)
 
 ---
 
-*Roadmap created: 2026-08-08*
+*Next milestone: `/gsd-new-milestone`*

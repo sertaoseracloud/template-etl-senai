@@ -1,52 +1,55 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.2
-milestone_name: Phases
-status: planning
-last_updated: "2026-08-09T00:19:50.276Z"
+milestone_name: Hexagonal Architecture & Developer Experience
+status: shipped
+last_updated: "2026-08-09T00:00:00.000Z"
 progress:
-  total_phases: 2
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 50
-current_phase: 0
+  total_phases: 3
+  completed_phases: 3
+  total_plans: 3
+  completed_plans: 3
+  percent: 100
+current_phase: null
 created: "2026-08-08T23:20:00.000Z"
-current_phase_name: Tests & Developer Experience (HEX-02, DX-01)
+current_phase_name: null
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md
+See: .planning/PROJECT.md (updated 2026-08-09)
 
-**Core value:** Clonar e rodar um comando resulta em ambiente de pea, job executado e testes verdes — offline, sem credencial AWS, sem passo manual.
+**Core value:** Clonar e rodar um comando resulta em ambiente de pé, job executado e testes verdes — offline, sem credencial AWS, sem passo manual.
 
-## v1.2 Goals
+**Current focus:** Planejando próximo marco (v1.3)
 
-1. **Arquitetura Hexagonal Full** — Refatorar Glue Job para ports & adapters
-2. **Testes com Mocks** — Reescrever usando mocks de Spark
-3. **lint --fix** — Adicionar ao run.sh
+## Milestone Status
 
-## Architecture Preview
+✅ **v1.2 shipped 2026-08-09** — closeout verificado (as 3 fases com VERIFICATION.md `passed`).
 
-```
-jobs/
-├── domain/
-│   ├── entities.py          # CsvRecord, ParquetRecord, JobContext
-│   └── ports/
-│       ├── primary/         # JobPort (driving)
-│       └── secondary/       # S3Port, SparkPort (driven)
-├── application/
-│   └── use_cases.py        # ProcessCsvJob, ValidateData
-├── adapters/
-│   ├── primary/             # GlueJobAdapter
-│   └── secondary/          # S3Adapter, SparkAdapter, GlueCatalogAdapter
-└── infrastructure/
-    └── di.py               # DI container
-```
+Marcos entregues:
+- v1.0 MVP (2026-08-08) — 4 fases
+- v1.1 Event-Driven ETL & Performance (2026-08-08) — 2 fases
+- v1.2 Hexagonal Architecture & DX (2026-08-09) — 3 fases
+
+## Open Blockers
+
+_(Nenhum)_
+
+## Carried Technical Debt
+
+- **WR-03** — risco de OOM em `collect()`; exige mudança arquitetural. Aberto desde v1.2 Phase 1.
+- **Cobertura end-to-end do GlueAdapter** — testes existem mas são gated por `@requires_glue` e não rodam no CI.
+
+## Notes on This Closeout
+
+As fases 2 e 3 foram entregues sem VERIFICATION.md e foram verificadas
+retroativamente no fechamento do marco, contra o código e não contra o
+autorrelato dos summaries. A fase 1 tinha frontmatter `passed` mas cabeçalho
+`gaps_found` — contradição corrigida após reconferir as 5 verdades observáveis.
 
 ## Next Steps
 
-- `/gsd-plan-phase 1` — Start Phase 1: Hexagonal Architecture
+- `/gsd-new-milestone` — iniciar v1.3

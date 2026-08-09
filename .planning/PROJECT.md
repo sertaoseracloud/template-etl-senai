@@ -10,21 +10,16 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 ## Requirements
 
-## Current Milestone: v1.2 (Complete)
+## Current State
 
-**Goal:** Refactor Glue Job to hexagonal architecture and add developer experience enhancements.
+**Shipped:** v1.2 — Hexagonal Architecture & Developer Experience (2026-08-09)
 
-**Achieved:**
-- Hexagonal architecture with ports & adapters pattern
-- Domain layer isolated (entities, value objects, ports as ABC)
-- DI container for dependency injection
-- Unit tests with mocks (17 passed)
-- Integration tests with S3 fixture (8 passed)
-- `./run.sh lint --fix` command working
-- Pre-commit hook configuration
-- CI/CD pipeline with GitHub Actions
+Três marcos entregues. O template hoje sobe offline, roda um job Glue 5.0 de
+ponta a ponta contra o emulador Floci, e tem o job estruturado em arquitetura
+hexagonal com testes unitários (mocks), testes de integração (fixtures S3) e
+pipeline CI de quatro jobs.
 
-**Next:** Run `/gsd-new-milestone` to plan v1.3
+**Next:** `/gsd-new-milestone` para planejar v1.3
 
 ### Validated
 
@@ -36,10 +31,26 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 - ✓ **IAC-01 through IAC-04** — v1.0 (Phase 3)
 - ✓ **CI-01 through CI-03** — v1.0 (Phase 3)
 - ✓ **DOC-01 through DOC-06** — v1.0 (Phase 4)
+- ✓ **EVT-01 through EVT-05** — v1.1 (Phases 5-6)
+- ✓ **SIM-01 through SIM-04** — v1.1 (Phase 5)
+- ✓ **IAC-05 through IAC-07** — v1.1 (Phase 5)
+- ✓ **PERF-01 through PERF-05** — v1.1 (Phase 6)
+- ✓ **HEX-01.1 through HEX-01.11** — v1.2 (Phase 1)
+- ✓ **HEX-02.1 through HEX-02.5** — v1.2 (Phases 2-3)
+- ✓ **INT-03.1 through INT-03.5** — v1.2 (Phase 3)
+- ✓ **DX-01.1 through DX-01.3, DX-03.1, DX-03.2** — v1.2 (Phases 2-3)
 
 ### Active
 
-_(None — v1.0 complete)_
+_(None — v1.2 complete; próximo marco a definir via `/gsd-new-milestone`)_
+
+### Known Technical Debt
+
+- **WR-03** — risco de OOM em `collect()` no caminho de escrita. Identificado no
+  code review da v1.2 Phase 1 e adiado por exigir mudança arquitetural. Aberto.
+- **Testes end-to-end do GlueAdapter** — existem e são verificados como artefato,
+  mas só executam com o container `aws-glue-libs:5` (`@requires_glue`); o CI os
+  ignora. A cobertura real desse caminho depende de rodar localmente com o container.
 
 ### Out of Scope
 
@@ -57,15 +68,16 @@ _(None — v1.0 complete)_
 
 **Shipped v1.1 Event-Driven ETL & Performance Testing** (2026-08-08): 2 phases, 3 plans, 17 requirements.
 
-**Shipped v1.2 Hexagonal Architecture & Developer Experience** (2026-08-09): 3 phases, 35 commits, 92 files changed.
+**Shipped v1.2 Hexagonal Architecture & Developer Experience** (2026-08-09): 3 phases, 3 plans, 26 requirements, 50 commits, 95 files changed (5.698 linhas — exclui fixtures CSV geradas em `data/perf/`).
 
 **New in v1.2:**
 - Hexagonal architecture with ports & adapters
-- Domain layer isolated (no Spark imports)
+- Domain layer isolated (no Spark imports — verificado por grep)
 - DI container factory pattern
 - Unit tests with mocks (17 passed)
-- Integration tests with Floci S3 fixture
-- Code review: 22 issues found and fixed
+- Integration tests with Floci S3 fixture (8 do DI container passando)
+- CI/CD com 4 jobs, todos verdes
+- Code review: 22 issues found, 21 fixed (WR-03 adiado)
 
 **Ecossistema e decisões técnicas apuradas durante o questionamento:**
 
@@ -100,6 +112,10 @@ _(None — v1.0 complete)_
 | `./run.sh` em vez de Makefile | Funciona igual em Git Bash (Windows) e Linux sem exigir `make` | ✓ Implemented — 8 subcommands with MSYS_NO_PATHCONV guard |
 | GitHub template repository em vez de cookiecutter | Reuso sem introduzir ferramenta extra de scaffolding para manter | ✓ Implemented — README, CONTRIBUTING, issue templates |
 | Endpoint AWS configurável só por env | Isola o risco de maturidade do Floci — trocar de emulador não deve custar refatoração | ✓ Implemented — All config via .env |
+| Arquitetura hexagonal (ports & adapters) no job | Isola a lógica de domínio do Spark/Glue, permitindo testes unitários com mocks sem container | ✓ Good — v1.2; domain sem imports de Spark, `job.py` de 105 → 50 linhas |
+| DI container por factory pattern | Conecta adapters sem acoplar o entrypoint às implementações concretas | ✓ Good — v1.2; 8 testes de integração cobrem o container |
+| Testes de PySpark real gated por marker | `@pytest.mark.spark` / `@requires_glue` mantêm a suíte rápida offline sem perder o caminho fiel | ⚠️ Revisit — o caminho gated não roda no CI, então essa cobertura depende de execução local |
+| Floci como container standalone no CI | GitHub Actions não permite `--network host` em `services:`; `docker run -d` + `host.docker.internal:host-gateway` resolve | ✓ Good — v1.2; pipeline verde |
 
 ## Evolution
 
@@ -119,4 +135,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-08-08 after v1.0 MVP milestone*
+*Last updated: 2026-08-09 after v1.2 milestone*

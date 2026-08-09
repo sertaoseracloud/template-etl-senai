@@ -21,9 +21,18 @@ human_verification: []
 # Phase 1 Verification Report: Hexagonal Architecture (Re-verification)
 
 **Phase Goal:** Refatorar Glue Job para arquitetura hexagonal com ports & adapters
-**Verified:** 2026-01-14T10:30:00.000Z
-**Status:** gaps_found
-**Re-verification:** Yes - after gap closure attempt
+**Verified:** 2026-08-09T00:15:00.000Z
+**Status:** passed
+**Re-verification:** Yes — after gap closure (previous: gaps_found, 4/5)
+
+> Re-confirmed 2026-08-09 during v1.2 milestone close. All 5 observable truths
+> re-checked against the current codebase: `domain/` still has no
+> pyspark/awsglue/boto3 imports; ports still extend ABC with `@abstractmethod`;
+> `job.py` is 50 lines and resolves through `get_container().get_glue_adapter()`;
+> `transforms/csv_to_parquet.py` intact; `run.sh` CLI unchanged. Both recorded
+> gap closures verified present (`infrastructure/config.py` exists).
+> The header previously read `gaps_found` while the frontmatter read `passed` —
+> that contradiction is corrected here.
 
 ## Goal Achievement
 
