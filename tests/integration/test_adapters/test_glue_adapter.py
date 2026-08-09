@@ -5,6 +5,12 @@ verifying the full hexagonal architecture integration.
 
 Tests run via subprocess spark-submit (not in-process Spark) following
 the same pattern as test_job.py to ensure realistic execution context.
+
+Requires:
+- Glue container (aws-glue-libs) with S3A support
+- Floci S3 emulator running
+
+Mark with @pytest.mark.glue to skip in standard CI (pip pyspark lacks hadoop-aws).
 """
 
 from __future__ import annotations
@@ -29,6 +35,14 @@ from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
 from jobs.csv_to_parquet.application.dto import JobRequest
 from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 from jobs.csv_to_parquet.domain.entities import JobStatus
+
+# ---------------------------------------------------------------------------
+# Skip marker for tests requiring Glue container
+# ---------------------------------------------------------------------------
+requires_glue = pytest.mark.skipif(
+    os.environ.get("GLUE_CONTAINER") != "true",
+    reason="Requires Glue container with S3A support (not available in pip pyspark)",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -141,6 +155,7 @@ def count_parquet_files() -> int:
 # ---------------------------------------------------------------------------
 # Tests
 # ---------------------------------------------------------------------------
+@requires_glue
 def test_glue_adapter_runs_via_subprocess(clean_curated: None) -> None:
     """GlueAdapter job completes with zero exit code and expected output."""
     result = run_glue_adapter_subprocess(timeout_seconds=300)
@@ -154,6 +169,7 @@ def test_glue_adapter_runs_via_subprocess(clean_curated: None) -> None:
     )
 
 
+@requires_glue
 def test_glue_adapter_job_status_completed(clean_curated: None) -> None:
     """Job completes with COMPLETED status and populated metrics."""
     result = run_glue_adapter_subprocess(timeout_seconds=300)
@@ -171,6 +187,7 @@ def test_glue_adapter_job_status_completed(clean_curated: None) -> None:
     assert "Rows written" in stdout, f"Expected 'Rows written' in stdout.\nSTDOUT:\n{stdout}"
 
 
+@requires_glue
 def test_glue_adapter_populates_rows_metrics(clean_curated: None) -> None:
     """Verify rows_read and rows_written are positive numbers."""
     result = run_glue_adapter_subprocess(timeout_seconds=300)
@@ -192,6 +209,7 @@ def test_glue_adapter_populates_rows_metrics(clean_curated: None) -> None:
     assert rows_written > 0, f"Expected positive rows_written, got {rows_written}"
 
 
+@requires_glue
 def test_glue_adapter_output_parquet_files_exist(clean_curated: None) -> None:
     """Output parquet files exist in curated bucket after job completion."""
     run_glue_adapter_subprocess(timeout_seconds=300)
@@ -204,6 +222,7 @@ def test_glue_adapter_output_parquet_files_exist(clean_curated: None) -> None:
     )
 
 
+@requires_glue
 def test_glue_adapter_in_process(
     spark_session: SparkSession,
     clean_curated: None,
@@ -255,6 +274,7 @@ def test_glue_adapter_in_process(
     assert parquet_count >= 18, f"Expected >=18 parquet files (3x6 partitions), got {parquet_count}"
 
 
+@requires_glue
 def test_glue_adapter_parquet_partition_structure(clean_curated: None) -> None:
     """Verify output parquet files follow expected partition structure."""
     run_glue_adapter_subprocess(timeout_seconds=300)
