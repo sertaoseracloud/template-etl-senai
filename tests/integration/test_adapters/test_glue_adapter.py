@@ -15,7 +15,6 @@ import time
 from pathlib import Path
 from typing import Any
 
-import boto3
 import pytest
 from pyspark.sql import SparkSession
 
@@ -24,14 +23,11 @@ from catalog.config import (  # noqa: E402  # boto3 available in Glue container
     endpoint_url,
     s3_client,
 )
-
 from jobs.csv_to_parquet.adapters.primary.glue_adapter import GlueAdapter
 from jobs.csv_to_parquet.adapters.secondary.spark_adapter import SparkAdapter
 from jobs.csv_to_parquet.application.dto import JobRequest
 from jobs.csv_to_parquet.application.use_cases import ProcessCsvUseCase
 from jobs.csv_to_parquet.domain.entities import JobStatus
-
-from .conftest import clear_curated_prefix, upload_csv_to_s3
 
 
 # ---------------------------------------------------------------------------
@@ -199,9 +195,7 @@ def test_glue_adapter_output_parquet_files_exist(clean_curated: None) -> None:
 
     # Verify parquet files exist
     parquet_count = count_parquet_files()
-    assert parquet_count >= 18, (
-        f"Expected at least 18 parquet files, got {parquet_count}"
-    )
+    assert parquet_count >= 18, f"Expected at least 18 parquet files, got {parquet_count}"
 
 
 def test_glue_adapter_in_process(
@@ -227,11 +221,12 @@ def test_glue_adapter_in_process(
     )
 
     # Create job request
+    project = os.environ.get("PROJECT_NAME", "template_etl").replace("_", "-")
     request = JobRequest(
         job_name="csv_to_parquet",
         file_key=None,
-        raw_bucket=f"{os.environ.get('PROJECT_NAME', 'template_etl').replace('_', '-')}-raw",
-        curated_bucket=f"{os.environ.get('PROJECT_NAME', 'template_etl').replace('_', '-')}-curated",
+        raw_bucket=f"{project}-raw",
+        curated_bucket=f"{project}-curated",
         partition_cols=["data_medicao", "cidade_key"],
     )
 
@@ -239,9 +234,7 @@ def test_glue_adapter_in_process(
     result = adapter.run(request)
 
     # Verify job completed successfully
-    assert result.status == JobStatus.COMPLETED, (
-        f"Expected status COMPLETED, got {result.status}"
-    )
+    assert result.status == JobStatus.COMPLETED, f"Expected status COMPLETED, got {result.status}"
 
     # Verify metrics are populated
     assert result.rows_read > 0, f"Expected positive rows_read, got {result.rows_read}"

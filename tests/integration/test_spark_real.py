@@ -10,7 +10,6 @@ These tests are skipped when Spark is unavailable (e.g., Java version mismatch).
 from __future__ import annotations
 
 import pytest
-from pyspark.sql import DataFrame
 from pyspark.sql.types import DoubleType, StringType, StructField, StructType
 
 # Import transforms from the canonical single-import point
