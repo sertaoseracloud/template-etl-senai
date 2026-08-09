@@ -94,6 +94,11 @@ preflight() {
     fi
   done
 
+  # Skip Floci running check if CI=true (GitHub Actions provides Floci as service)
+  if [ "${CI:-}" = "true" ]; then
+    return 0
+  fi
+
   local endpoint
   endpoint="$(env_value AWS_ENDPOINT_URL)"
   case "$endpoint" in
