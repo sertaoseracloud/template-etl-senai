@@ -50,16 +50,16 @@ jobs:
           terraform_version: 1.9
 
       - name: Terraform init
-        run: cd infra && terraform init -backend=false
+        run: terraform init -backend=false -chdir=infra
         env:
           AWS_ACCESS_KEY_ID: ""
           AWS_SECRET_ACCESS_KEY: ""
 
       - name: Terraform fmt check
-        run: cd infra && terraform fmt -check -recursive
+        run: terraform fmt -check -recursive -chdir=infra
 
       - name: Terraform validate
-        run: cd infra && terraform validate
+        run: terraform validate -chdir=infra
 
   # DX-03.1: Unit tests (no Spark/AWS required)
   test-unit:
