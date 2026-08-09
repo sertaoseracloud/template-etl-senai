@@ -55,7 +55,7 @@ class GlueAdapter(JobPort):
             self._logger.info(
                 f"TRIGGER_EVENT: {{"
                 f"'file_key': '{request.file_key or 'batch'}', "
-                f"'size_bytes': {0}, "
+                f"'size_bytes': {result.file_size_bytes}, "
                 f"'timestamp': '{iso_timestamp}'"
                 f"}}"
             )
