@@ -50,16 +50,18 @@ jobs:
           terraform_version: 1.9
 
       - name: Terraform init
-        run: terraform init -backend=false infra/
+        working-directory: infra
+        run: terraform init -backend=false
         env:
-          # No credentials needed — offline validation (IAC-04)
           AWS_ACCESS_KEY_ID: ""
           AWS_SECRET_ACCESS_KEY: ""
 
       - name: Terraform fmt check
+        working-directory: infra
         run: terraform fmt -check -recursive
 
       - name: Terraform validate
+        working-directory: infra
         run: terraform validate
 
   # DX-03.1: Unit tests (no Spark/AWS required)
