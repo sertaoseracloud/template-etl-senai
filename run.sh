@@ -202,9 +202,9 @@ cmd_job() {
 # cmd_test — run the pytest suite inside the Glue container. require_file
 # runs before any docker invocation for the same reason as cmd_job.
 cmd_test() {
-  require_file tests "tests not found. This subcommand is wired in Phase 1 but only functional from Phase 2 onward."
+  require_file tests/conftest.py "tests not found. This subcommand is wired in Phase 1 but only functional from Phase 2 onward."
   preflight
-  run_step "run pytest suite" docker compose --profile glue run --rm glue -c "python3 -m pytest --disable-warnings --with-integration -m 'not athena'"
+  run_step "run pytest suite" docker compose --profile glue run --rm glue python3 -m pytest --disable-warnings --with-integration -m 'not athena'
 }
 
 # cmd_lint — ruff check, then ruff format --check, both against the tools
@@ -213,7 +213,7 @@ cmd_test() {
 cmd_lint() {
   preflight
   local fix_mode=""
-  if [ "$1" = "--fix" ]; then
+  if [ "${1:-}" = "--fix" ]; then
     fix_mode="--fix"
     echo "Running ruff with auto-fix..."
   fi
@@ -252,8 +252,6 @@ cmd_perf_test() {
   mkdir -p results data/perf
 
   # Generate temp CSV to data/perf (accessible by both host and container)
-  local n_rows
-  n_rows="$1"
   run_step "generate test data ($n_rows rows)" python scripts/generate_test_data.py --rows "$n_rows" --output "data/perf/perf_test_${n_rows}.csv"
 
   # Upload to S3 and capture key
@@ -324,7 +322,7 @@ main() {
       ;;
   esac
 
-  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ] && [ "$cmd" != "benchmark" ] && [ "$cmd" != "validate-s3" ] && [ "$cmd" != "lint" ]; then
+  if [ "$#" -gt 1 ] && [ "$cmd" != "upload" ] && [ "$cmd" != "perf-test" ] && [ "$cmd" != "benchmark" ]  && [ "$cmd" != "validate-s3" ] && [ "$cmd" != "validate-spark" ] && [ "$cmd" != "validate-athena" ] && [ "$cmd" != "lint" ]; then
     echo "Unexpected extra argument: ${2}" >&2
     exit 2
   fi
@@ -339,7 +337,6 @@ main() {
     job) cmd_job ;;
     test) cmd_test ;;
     lint) cmd_lint "${2:-}" ;;
-    lint-fix) cmd_lint --fix ;;
     demo) cmd_demo ;;
     perf-test) cmd_perf_test "$2" ;;
     benchmark) cmd_benchmark "${2:-}" ;;

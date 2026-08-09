@@ -102,3 +102,16 @@ class TestJobResult:
         assert JobStatus.COMPLETED.value == "completed"
         assert JobStatus.FAILED.value == "failed"
         assert JobStatus.SKIPPED.value == "skipped"
+
+    def test_to_dict_pending(self) -> None:
+        """JobResult with PENDING status."""
+        result = JobResult(status=JobStatus.PENDING)
+        data = result.to_dict()
+        assert data["status"] == "pending"
+
+    def test_to_dict_failed_without_message(self) -> None:
+        """JobResult with FAILED status but no error message."""
+        result = JobResult(status=JobStatus.FAILED, rows_read=0, rows_written=0)
+        data = result.to_dict()
+        assert data["status"] == "failed"
+        assert data["error"] is None
