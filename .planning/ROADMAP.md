@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-08-08)
 - ✅ **v1.1** — Event-Driven ETL & Performance Testing ([archived](milestones/v1.1-ROADMAP.md))
-- 🚧 **v1.2** — Hexagonal Architecture & Developer Experience (in progress)
+- ✅ **v1.2** — Hexagonal Architecture & Developer Experience
 
 ## v1.2 Phases
 
@@ -44,7 +44,7 @@
 |-------|-------|--------|-----------|
 | 1. Hexagonal Architecture | 1 | Complete | 2026-08-08 |
 | 2. Tests & DX | 1 | Complete | 2026-08-09 |
-| 3. Integration & Performance Tests | 1 | Planned | — |
+| 3. Integration & Performance Tests | 1 | Complete | 2026-08-09 |
 
 ---
 
@@ -53,7 +53,7 @@
 **Goal:** Complete deferred integration tests and add performance testing.
 
 **Plans:**
-- [ ] 03-01-PLAN.md — Integration tests with S3 fixture and PySpark real tests
+- [x] 03-01-PLAN.md — Integration tests with S3 fixture and PySpark real tests
 
 **Requirements:** HEX-02.4, HEX-02.5, DX-01.3
 
