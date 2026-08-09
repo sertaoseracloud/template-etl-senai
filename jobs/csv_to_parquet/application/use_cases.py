@@ -35,6 +35,8 @@ class ProcessCsvUseCase:
         Returns:
             Job response with results.
         """
+        # Initialize input_path before try block to avoid fragile locals() workaround
+        input_path = ""
         try:
             # Determine input path
             if request.file_key:
@@ -54,7 +56,11 @@ class ProcessCsvUseCase:
             data = self._transformer.derive_temp_media(data)
 
             # Write Parquet
-            output_path = f"s3://{request.curated_bucket}/temperaturas/"
+            # Distinguish event-driven output path from batch processing
+            if request.file_key:
+                output_path = f"s3://{request.curated_bucket}/temperaturas/{request.file_key.rsplit('.', 1)[0]}/"
+            else:
+                output_path = f"s3://{request.curated_bucket}/temperaturas/"
             self._storage.write_parquet(data, output_path, request.partition_cols)
 
             return JobResponse(
@@ -69,14 +75,14 @@ class ProcessCsvUseCase:
         except FileNotFoundError as e:
             return JobResponse(
                 success=False,
-                input_path=input_path if "input_path" in locals() else "",
+                input_path=input_path,
                 message="File not found",
                 error=str(e),
             )
         except Exception as e:
             return JobResponse(
                 success=False,
-                input_path=input_path if "input_path" in locals() else "",
+                input_path=input_path,
                 message="Processing failed",
                 error=str(e),
             )
