@@ -107,7 +107,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup .env
-        run: cp .env.example .env
+        run: |
+          cp .env.example .env
+          # Use localhost for Floci since it's exposed as GitHub Actions service
+          echo "AWS_ENDPOINT_URL=http://localhost:4566" >> .env
 
       - name: Set up Python
         uses: actions/setup-python@v5
