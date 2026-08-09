@@ -31,6 +31,9 @@ class SparkAdapter(StoragePort, TransformPort):
         # Convert S3A path
         s3a_path = path.replace("s3://", "s3a://")
         df = self._spark.read.csv(s3a_path, header=True, inferSchema=True)
+        # NOTE: df.collect() loads all data to driver memory (WR-03).
+        # For large datasets this will cause OOM errors. Consider refactoring
+        # transform ports to work with DataFrames instead of list[dict].
         return [row.asDict() for row in df.collect()]
 
     def write_parquet(self, data: list[dict], path: str, partition_cols: list[str]) -> None:
@@ -56,8 +59,10 @@ class SparkAdapter(StoragePort, TransformPort):
                     size_bytes=status.getLen(),
                     path=s3a_path,
                 )
-        except Exception:
-            pass
+        except Exception as e:
+            import logging
+            logging.warning(f"Failed to get file info for {path}: {e}")
+            return None
         return None
 
     def add_city_key(self, data: list[dict]) -> list[dict]:
