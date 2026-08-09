@@ -161,7 +161,7 @@ jobs:
         run: sed -i 's|AWS_ENDPOINT_URL=.*|AWS_ENDPOINT_URL=http://host.docker.internal:4566|' .env
 
       - name: Run ETL job
-        run: docker compose --profile glue run --rm glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet
+        run: docker compose --profile glue run --rm --add-host host.docker.internal:host-gateway glue spark-submit jobs/csv_to_parquet/job.py --JOB_NAME csv_to_parquet
 
       - name: Cleanup Floci
         if: always()
