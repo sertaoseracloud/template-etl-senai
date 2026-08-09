@@ -10,18 +10,21 @@ Clonar e rodar um comando resulta em ambiente de pé, job executado e testes ver
 
 ## Requirements
 
-## Current Milestone: v1.1 (Complete)
+## Current Milestone: v1.2 (Complete)
 
-**Goal:** Enable event-driven ETL with S3-triggered Glue jobs and add dynamic performance test data generation, validated locally in Docker.
+**Goal:** Refactor Glue Job to hexagonal architecture and add developer experience enhancements.
 
 **Achieved:**
-- `./run.sh upload <file>` — Upload to S3
-- `./run.sh watch` — Poll S3 and trigger job (local EventBridge simulation)
-- `./run.sh perf-test <N>` — End-to-end benchmark
-- `./run.sh benchmark` — Suite (1K, 10K, 100K rows)
-- `./run.sh validate-s3/spark/athena` — Multi-layer validation
+- Hexagonal architecture with ports & adapters pattern
+- Domain layer isolated (entities, value objects, ports as ABC)
+- DI container for dependency injection
+- Unit tests with mocks (17 passed)
+- Integration tests with S3 fixture (8 passed)
+- `./run.sh lint --fix` command working
+- Pre-commit hook configuration
+- CI/CD pipeline with GitHub Actions
 
-**Next:** Run `/gsd-new-milestone` to plan v1.2
+**Next:** Run `/gsd-new-milestone` to plan v1.3
 
 ### Validated
 
@@ -54,11 +57,15 @@ _(None — v1.0 complete)_
 
 **Shipped v1.1 Event-Driven ETL & Performance Testing** (2026-08-08): 2 phases, 3 plans, 17 requirements.
 
-**New in v1.1:**
-- Floci S3 triggers (upload, watch)
-- EventBridge Terraform module
-- Performance testing infrastructure
-- Multi-layer validation (S3, PySpark, Athena)
+**Shipped v1.2 Hexagonal Architecture & Developer Experience** (2026-08-09): 3 phases, 35 commits, 92 files changed.
+
+**New in v1.2:**
+- Hexagonal architecture with ports & adapters
+- Domain layer isolated (no Spark imports)
+- DI container factory pattern
+- Unit tests with mocks (17 passed)
+- Integration tests with Floci S3 fixture
+- Code review: 22 issues found and fixed
 
 **Ecossistema e decisões técnicas apuradas durante o questionamento:**
 

@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 1-4 (shipped 2026-08-08)
 - ✅ **v1.1** — Event-Driven ETL & Performance Testing ([archived](milestones/v1.1-ROADMAP.md))
-- ✅ **v1.2** — Hexagonal Architecture & Developer Experience
+- ✅ **v1.2** — Hexagonal Architecture & Developer Experience ([archived](milestones/v1.2-ROADMAP.md))
 
 ## v1.2 Phases
 

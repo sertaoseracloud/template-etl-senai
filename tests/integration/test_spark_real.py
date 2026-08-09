@@ -201,8 +201,8 @@ def test_full_transform_pipeline_schema(spark_session) -> None:
             StructField("data_medicao", StringType(), True),
             StructField("temp_min", DoubleType(), True),
             StructField("temp_max", DoubleType(), True),
-            StructField("temp_media", DoubleType(), False),
-            StructField("cidade_key", StringType(), False),
+            StructField("temp_media", DoubleType(), True),
+            StructField("cidade_key", StringType(), True),
         ]
     )
 
