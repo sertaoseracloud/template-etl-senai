@@ -19,12 +19,13 @@ resource "aws_glue_catalog_table" "this" {
     { "parquet.compression" = "SNAPPY" }
   )
 
-  partition_keys = [
-    for key in local.schema.partition_keys : {
-      name = key.name
-      type = key.type
+  dynamic "partition_keys" {
+    for_each = local.schema.partition_keys
+    content {
+      name = partition_keys.value.name
+      type = partition_keys.value.type
     }
-  ]
+  }
 
   storage_descriptor {
     location = "s3://${var.curated_bucket_name}/${local.schema.location}"
@@ -32,17 +33,18 @@ resource "aws_glue_catalog_table" "this" {
     input_format  = local.schema.storage.input_format
     output_format = local.schema.storage.output_format
 
-    serde_info {
+    ser_de_info {
       serialization_library = local.schema.storage.serde
     }
 
-    columns = [
-      for col in local.schema.columns : {
-        name = col.name
-        type = col.type
-        comment = lookup(col, "comment", "")
+    dynamic "columns" {
+      for_each = local.schema.columns
+      content {
+        name    = columns.value.name
+        type    = columns.value.type
+        comment = lookup(columns.value, "comment", "")
       }
-    ]
+    }
   }
 }
 
@@ -65,17 +67,18 @@ resource "aws_glue_partition" "this" {
     input_format  = local.schema.storage.input_format
     output_format = local.schema.storage.output_format
 
-    serde_info {
+    ser_de_info {
       serialization_library = local.schema.storage.serde
     }
 
-    columns = [
-      for col in local.schema.columns : {
-        name = col.name
-        type = col.type
-        comment = lookup(col, "comment", "")
+    dynamic "columns" {
+      for_each = local.schema.columns
+      content {
+        name    = columns.value.name
+        type    = columns.value.type
+        comment = lookup(columns.value, "comment", "")
       }
-    ]
+    }
   }
 
   depends_on = [

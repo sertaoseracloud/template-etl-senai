@@ -1,8 +1,8 @@
 # EventBridge rule to capture S3 ObjectCreated events via CloudTrail
 resource "aws_cloudwatch_event_rule" "s3_object_created" {
-  name           = "${var.project_name}-s3-object-created"
-  description    = "Capture S3 ObjectCreated events for ${var.raw_bucket_name}"
-  event_pattern  = jsonencode({
+  name        = "${var.project_name}-s3-object-created"
+  description = "Capture S3 ObjectCreated events for ${var.raw_bucket_name}"
+  event_pattern = jsonencode({
     source : ["aws.s3"],
     "detail-type" : ["AWS API Call via CloudTrail"],
     detail : {
@@ -54,10 +54,10 @@ resource "aws_iam_role_policy" "eventbridge_glue_invoke" {
 
 # EventBridge target to invoke Glue job with Input Transformer
 resource "aws_cloudwatch_event_target" "glue_job" {
-  rule           = aws_cloudwatch_event_rule.s3_object_created.name
-  target_id      = "${var.project_name}-glue-job-target"
-  arn            = "arn:aws:glue:${data.aws_region.current.name}:${data.aws_account_id.current}:job/${var.project_name}-csv-to-parquet"
-  role_arn       = aws_iam_role.eventbridge_to_glue.arn
+  rule      = aws_cloudwatch_event_rule.s3_object_created.name
+  target_id = "${var.project_name}-glue-job-target"
+  arn       = "arn:aws:glue:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:job/${var.project_name}-csv-to-parquet"
+  role_arn  = aws_iam_role.eventbridge_to_glue.arn
 
   input_transformer {
     input_template = "\"--file-key\", \"<s3-key>\""
@@ -71,17 +71,13 @@ resource "aws_cloudwatch_event_target" "glue_job" {
 resource "aws_s3_bucket_notification" "to_eventbridge" {
   bucket = var.raw_bucket_name
 
-  eventbridge_configuration {
-    event_rule = aws_cloudwatch_event_rule.s3_object_created.name
-    suffix     = var.prefix
-  }
+  # Enables S3 -> EventBridge event delivery for this bucket. Which events are
+  # acted on is decided by the rule's event pattern (see s3_object_created),
+  # not here — this is an on/off switch, it takes no filters.
+  eventbridge = true
 }
 
 # Data sources for AWS region and account ID
-data "aws_region" "current" {
-  name = ""
-}
+data "aws_region" "current" {}
 
-data "aws_account_id" "current" {
-  id = ""
-}
+data "aws_caller_identity" "current" {}
