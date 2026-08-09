@@ -40,13 +40,30 @@ created: "2026-08-08T23:20:00.000Z"
 ## HEX-02: Testes com Mocks
 
 ### Unit Tests
-- [ ] **HEX-02.1**: Reescrever `tests/unit/test_transforms.py` com mocks de Spark DataFrame
-- [ ] **HEX-02.2**: Criar `tests/unit/test_domain/` com testes de domínio
-- [ ] **HEX-02.3**: Criar `tests/unit/test_ports/` com testes de contratos
+- [x] **HEX-02.1**: Reescrever `tests/unit/test_transforms.py` com mocks de Spark DataFrame
+- [x] **HEX-02.2**: Criar `tests/unit/test_domain/` com testes de domínio
+- [x] **HEX-02.3**: Criar `tests/unit/test_ports/` com testes de contratos
 
 ### Integration Tests
 - [ ] **HEX-02.4**: Criar `tests/integration/test_adapters/` com fixture de S3
 - [ ] **HEX-02.5**: Adicionar tests de PySpark real (em Glue container)
+
+---
+
+## Phase 3: Integration & Performance Tests
+
+### Integration Tests
+- [ ] **INT-03.1**: Criar `tests/integration/test_adapters/` com fixture de S3 (Floci)
+- [ ] **INT-03.2**: Testar GlueAdapter end-to-end com mock S3
+- [ ] **INT-03.3**: Testar DI container com mock adapters
+
+### PySpark Real Tests
+- [ ] **INT-03.4**: Adicionar tests de PySpark real no Glue container
+- [ ] **INT-03.5**: Validar transform functions com dados reais
+
+### Developer Experience
+- [ ] **DX-03.1**: Configurar pre-commit hook (opcional)
+- [ ] **DX-03.2**: Adicionar CI/CD pipeline stub
 
 ---
 
@@ -63,6 +80,9 @@ created: "2026-08-08T23:20:00.000Z"
 
 | Requirement | Phase | Status |
 |------------|-------|--------|
-| HEX-01.1 - HEX-01.11 | Phase 1 | Pending |
-| HEX-02.1 - HEX-02.5 | Phase 2 | Pending |
-| DX-01.1 - DX-01.3 | Phase 2 | Pending |
+| HEX-01.1 - HEX-01.11 | Phase 1 | ✅ Complete |
+| HEX-02.1 - HEX-02.3 | Phase 2 | ✅ Complete |
+| HEX-02.4 - HEX-02.5 | Phase 3 | Pending |
+| DX-01.1 - DX-01.2 | Phase 2 | ✅ Complete |
+| DX-01.3, DX-03.1 | Phase 3 | Pending |
+| INT-03.1 - INT-03.5 | Phase 3 | Pending |
