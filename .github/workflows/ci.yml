@@ -94,12 +94,76 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pytools-
 
-      # Full pipeline: bootstrap catalog → seed data → run job → run tests (CI-02, CI-03)
+  # Full pipeline: bootstrap catalog → seed data → run job → run tests (CI-02, CI-03)
       - name: Bootstrap catalog
         run: ./run.sh bootstrap
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  # DX-03.1, DX-03.2: Unit tests (no Spark/AWS required)
+  test-unit:
+    name: Test Unit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache Python tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pytools-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pytools-
+
+      - name: Install dependencies
+        run: pip install pytest pytest-mock boto3 pyspark
+
+      - name: Run unit tests
+        run: pytest tests/unit/ -v
+
+  # DX-03.2: Integration tests (requires Floci)
+  test-integration:
+    name: Test Integration
+    runs-on: ubuntu-latest
+    services:
+      floci:
+        image: ghcr.io/arc54/floci:latest
+        ports:
+          - 4566:4566
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache Python tools
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pytools-${{ hashFiles('requirements.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pytools-
+
+      - name: Install dependencies
+        run: pip install pytest boto3 pyspark
+
+      - name: Run integration tests
+        run: pytest tests/integration/ -v --ignore=tests/integration/test_job.py
+        env:
+          AWS_ENDPOINT_URL: http://localhost:4566
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_DEFAULT_REGION: us-east-1
 
       - name: Seed sample data
         run: ./run.sh seed

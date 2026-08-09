@@ -1,0 +1,18 @@
+# DX-01.3: Pre-commit hook configuration for code quality
+# Uses official pre-commit-hooks and astral-sh/ruff repositories
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb', '500']
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
